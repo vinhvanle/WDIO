@@ -1,0 +1,23 @@
+{
+  "actions": [
+    {
+      "id": "action2",
+      "type": "key",
+      "parameters": {},
+      "actions": [
+        {
+          "type": "keyDown",
+          "value": "2"
+        },
+        {
+          "type": "pause",
+          "duration": 10
+        },
+        {
+          "type": "keyUp",
+          "value": "2"
+        }
+      ]
+    }
+  ]
+}
