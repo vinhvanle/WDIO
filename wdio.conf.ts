@@ -62,6 +62,11 @@ export const config: Options.Testrunner = {
   capabilities: [
     {
       browserName: 'chrome',
+      'goog:chromeOptions': {
+        args: ['--disable-web-security'],
+      },
+      acceptInsecureCerts: true,
+      timeouts: { implicit: 15000, pageLoad: 200000, script: 30000 },
     },
   ],
 
@@ -72,7 +77,7 @@ export const config: Options.Testrunner = {
   // Define all options that are relevant for the WebdriverIO instance here
   //
   // Level of logging verbosity: trace | debug | info | warn | error | silent
-  logLevel: 'info',
+  logLevel: 'error',
   //
   // Set specific log levels per logger
   // loggers:
@@ -160,7 +165,7 @@ export const config: Options.Testrunner = {
     // <string> (expression) only execute the features or scenarios with tags matching the expression
     tagExpression: '@demo',
     // <number> timeout for step definitions
-    timeout: 60000,
+    timeout: 300000,
     // <boolean> Enable this config to treat undefined definitions as warnings.
     ignoreUndefinedDefinitions: false,
   },

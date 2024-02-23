@@ -8,6 +8,7 @@ Given(/^Google page is opened$/, async function () {
   await browser.maximizeWindow();
   await browser.url('https://google.com');
   //   await browser.pause(3000);
+  // console.log(`>> Browser Obj: ${JSON.stringify(browser)}`);
 });
 
 When(/^Search with (.*)$/, async function (searchItem) {
@@ -15,6 +16,7 @@ When(/^Search with (.*)$/, async function (searchItem) {
   await searchBox.setValue(searchItem);
   //   await browser.pause(3000);
   await browser.keys('Enter');
+  // console.log(`>> Element Obj: ${JSON.stringify(searchBox)}`);
 });
 
 Then(/^Click on first search result$/, async function () {
@@ -24,6 +26,19 @@ Then(/^Click on first search result$/, async function () {
 });
 
 Then(/^URL should match (.*)$/, async function (expectedURL) {
+  await browser.waitUntil(
+    async () => {
+      return (
+        (await browser.getTitle()) ===
+        'WebdriverIO · Next-gen browser and mobile automation test framework for Node.js | WebdriverIO'
+      );
+    },
+    {
+      timeout: 20000,
+      interval: 500,
+      timeoutMsg: `Could not load the page, current title: ${await browser.getTitle()}`,
+    }
+  );
   let url = await browser.getUrl();
   expect(url).to.equal(expectedURL);
 });

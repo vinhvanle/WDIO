@@ -1,5 +1,5 @@
 {
-  "name": "WDIO",
+  "name": "WebdriverIO",
   "type": "module",
   "devDependencies": {
     "@types/chai": "^4.3.11",
@@ -14,6 +14,8 @@
     "typescript": "^5.3.3"
   },
   "scripts": {
-    "wdio": "wdio run ./wdio.conf.ts"
+    "wdio": "wdio run ./wdio.conf.ts",
+    "demo": "npx wdio wdio.conf.ts --cucumberOpts.tagExpression='@demo'",
+    "smoke": "npx wdio wdio.conf.ts --cucumberOpts.tagExpression='@smoke'"
   }
 }

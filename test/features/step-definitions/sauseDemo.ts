@@ -5,18 +5,43 @@ import 'dotenv';
 Given(/^Login to inventory app at (.*)$/, async function (URL) {
   //Navigate to the site
   await browser.url(URL);
-  await browser.setTimeout({ implicit: 15000, pageLoad: 10000 });
+  // await browser.setTimeout({ implicit: 15000, pageLoad: 10000 });
   await browser.maximizeWindow();
 
   //Login to the app
-  let username = await $('#user-name');
-  let password = await $('#password');
-  let login = await $('#login-button');
+  try {
+    await $('#user-name').setValue('standard_user');
+    await $('#password').setValue('secret_sauce');
+    await $('#login-button').click();
+  } catch (err) {
+    console.log(`Error in first login. retrying....`);
+    await browser.refresh();
+    await browser.pause(2000);
 
-  await username.setValue('standard_user');
-  await password.setValue('secret_sauce');
-  await login.click();
-  await browser.debug();
+    await $('#user-name').setValue('standard_user');
+    await $('#password').setValue('secret_sauce');
+    await $('#login-button').click();
+  }
+  /**
+   * Login with another user
+   */
+  // await browser.pause(2000);
+  // await browser.reloadSession();
+
+  // await browser.url(URL);
+  // await browser.maximizeWindow();
+
+  // await $('#user-name').setValue('problem_user');
+  // await $('#password').setValue('secret_sauce');
+  // await $('#login-button').click();
+
+  // await browser.pause(2000);
+  // await browser.back();
+  // await browser.pause(2000);
+  // await browser.forward();
+  // await browser.pause(2000);
+
+  // await browser.debug();
 });
 
 When(
