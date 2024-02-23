@@ -273,7 +273,154 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
 
   /**
    * 7. Basic scrolling
+   * Methods: (Element methods)
+   * 1. scrollIntoView
    */
+  // await browser.url('https://amazon.co.uk');
+
+  // await $('span=Best Sellers in Books').scrollIntoView();
+
+  /**
+   * Web tables
+   * What are we going to cover:
+   * 1. Check number of rows and columns
+   * 2. Get whole table data
+   * 3. Get single row [based on a condition]
+   * 4. Get single column
+   * 5. Get single cell value [based on another cell]
+   *
+   */
+
+  // await browser.url(`${URL}/tables`);
+
+  // //1. Check number of rows and columns
+  // let rowCount = await $$(`//table[@id='table1']/tbody/tr`).length;
+  // expect(rowCount).to.equal(4);
+  // console.log(`>> Number of rows: ${rowCount}`);
+
+  // let colCount = await $$(`//table[@id='table1']/thead/tr/th`).length;
+  // expect(colCount).to.equal(6);
+  // console.log(`>> Number of columns: ${colCount}`);
+
+  //2. get whole table data
+  // let data = [];
+
+  // for (let i = 0; i < rowCount; i++) {
+  //   let personObj = {
+  //     lastname: '',
+  //     firstname: '',
+  //     email: '',
+  //     due: '',
+  //     web: '',
+  //   };
+  //   for (let j = 0; j < colCount; j++) {
+  //     let celValue = await $(
+  //       `//table[@id='table1']/tbody/tr[${i + 1}]/td[${j + 1}]`
+  //     ).getText();
+  //     if (j === 0) personObj.lastname = celValue;
+  //     if (j === 1) personObj.firstname = celValue;
+  //     if (j === 2) personObj.email = celValue;
+  //     if (j === 3) personObj.due = celValue;
+  //     if (j === 4) personObj.web = celValue;
+  //   }
+  //   data.push(personObj);
+  // }
+  // console.log(`>>> Data: ${JSON.stringify(data)}`);
+
+  // //3. Get single row (based on a condition)
+  // let data = [];
+
+  // for (let i = 0; i < rowCount; i++) {
+  //   let personObj = {
+  //     lastname: '',
+  //     firstname: '',
+  //     email: '',
+  //     due: '',
+  //     web: '',
+  //   };
+  //   for (let j = 0; j < colCount; j++) {
+  //     let cellValue = await $(
+  //       `//table[@id='table1']/tbody/tr[${i + 1}]/td[${j + 1}]`
+  //     ).getText();
+  //     let firstname = await $(
+  //       `//table[@id='table1']/tbody/tr[${i + 1}]/td[2]`
+  //     ).getText();
+  //     if (firstname === 'Jason') {
+  //       if (j === 0) personObj.lastname = cellValue;
+  //       if (j === 1) personObj.firstname = cellValue;
+  //       if (j === 2) personObj.email = cellValue;
+  //       if (j === 3) personObj.due = cellValue;
+  //       if (j === 4) personObj.web = cellValue;
+  //     }
+  //   }
+  //   if (personObj.firstname) {
+  //     data.push(personObj);
+  //   }
+  // }
+  // console.log(data);
+
+  // //4. Get single column
+  // let arr = [];
+  // for (let i = 0; i < rowCount; i++) {
+  //   let cellValue = await $(
+  //     `//table[@id='table1']/tbody/tr[${i + 1}]/td[4]`
+  //   ).getText();
+  //   arr.push(cellValue);
+  // }
+  // console.log(arr);
+
+  // //5. Get single cell value based on another cell
+
+  // let arr = [];
+  // for (let i = 0; i < rowCount; i++) {
+  //   let price = await $(
+  //     `//table[@id='table1']/tbody/tr[${i + 1}]/td[4]`
+  //   ).getText();
+  //   let firstname = await $(
+  //     `//table[@id='table1']/tbody/tr[${i + 1}]/td[2]`
+  //   ).getText();
+
+  //   if (+price.replace('$', '') > 50) {
+  //     arr.push(firstname);
+  //   }
+  // }
+  // console.log(arr);
+
+  /**
+   *8. Scrolling
+
+   Visible Portion
+   windows object: 
+   1. scrollBy
+   Y -> [-]window.innerHeight
+   */
+  // await browser.url('https://vi.wikipedia.org');
+  // //Scroll down
+  // await browser.execute(() => {
+  //   window.scrollBy(0, window.innerHeight);
+  // });
+  // await browser.pause(2000);
+
+  // //SCroll top
+  // await browser.execute(() => {
+  //   window.scrollBy(0, -window.innerHeight);
+  // });
+
+  // /**
+  //  * Invisible portion
+  //  * windows object:
+  //  * 1. scrollTo
+  //  * Y => document.body.scrollTop[scrollHeight]
+  //  */
+  // await browser.pause(2000);
+  // await browser.execute(() => {
+  //   window.scrollTo(0, document.body.scrollHeight);
+  // });
+
+  // await browser.pause(2000);
+  // await browser.execute(() => {
+  //   window.scrollTo(0, document.body.scrollTop);
+  // });
 
   await browser.debug();
 });
