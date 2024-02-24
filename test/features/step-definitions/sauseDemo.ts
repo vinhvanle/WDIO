@@ -2,57 +2,72 @@ import { Given, When, Then } from '@wdio/cucumber-framework';
 import { expect } from 'chai';
 import 'dotenv';
 
-Given(/^Login to inventory app at (.*)$/, async function (URL) {
-  // console.log(`>>> Browser options: ${JSON.stringify(browser.options)}`);
-  //Navigate to the site
-  //@ts-ignore
-  await browser.url(browser.options.sauceDemoURL);
-  // console.log(`>> Test config value: ${JSON.stringify(browser.options)}`);
+Given(
+  /^As (a|an) (.*) user I Login to inventory app$/,
+  async function (prefixText, userType, dataTable) {
+    //Get the testID
+    console.log(`>> Given step testID: ${this.testID}`);
 
-  // await browser.setTimeout({ implicit: 15000, pageLoad: 10000 });
-  await browser.maximizeWindow();
+    let dt = dataTable.hashes();
+    // console.log(`>> The type of dt : ${typeof dt}`);
+    // console.log(`>> The type of dt : ${dt.constructor}`);
+    // console.log(`>> The value of dt: ${JSON.stringify(dt)}`);
 
-  // console.log(`Test user: ${process.env.TEST_USERNAME}`);
+    // console.log(`>>> Browser options: ${JSON.stringify(browser.options)}`);
+    //Navigate to the site
+    //@ts-ignore
+    await browser.url(browser.options.sauceDemoURL);
+    // console.log(`>> Test config value: ${JSON.stringify(browser.options)}`);
 
-  //Login to the app
-  try {
-    await $('#user-name').setValue(process.env.STANDARD_USERNAME);
-    await $('#password').setValue(process.env.STANDARD_PASSWORD);
-    await $('#login-button').click();
-  } catch (err) {
-    console.log(`Error in first login. retrying....`);
-    await browser.refresh();
-    await browser.pause(2000);
+    // await browser.setTimeout({ implicit: 15000, pageLoad: 10000 });
+    await browser.maximizeWindow();
 
-    await $('#user-name').setValue('standard_user');
-    await $('#password').setValue('secret_sauce');
-    await $('#login-button').click();
+    // console.log(`Test user: ${process.env.TEST_USERNAME}`);
+
+    //Login to the app
+    try {
+      await $('#user-name').setValue(process.env.STANDARD_USERNAME);
+      await $('#password').setValue(process.env.STANDARD_PASSWORD);
+      await $('#login-button').click();
+    } catch (err) {
+      console.log(`Error in first login. retrying....`);
+      await browser.refresh();
+      await browser.pause(2000);
+
+      await $('#user-name').setValue('standard_user');
+      await $('#password').setValue('secret_sauce');
+      await $('#login-button').click();
+    }
+    /**
+     * Login with another user
+     */
+    // await browser.pause(2000);
+    // await browser.reloadSession();
+
+    // await browser.url(URL);
+    // await browser.maximizeWindow();
+
+    // await $('#user-name').setValue('problem_user');
+    // await $('#password').setValue('secret_sauce');
+    // await $('#login-button').click();
+
+    // await browser.pause(2000);
+    // await browser.back();
+    // await browser.pause(2000);
+    // await browser.forward();
+    // await browser.pause(2000);
+
+    // await browser.debug();
   }
-  /**
-   * Login with another user
-   */
-  // await browser.pause(2000);
-  // await browser.reloadSession();
-
-  // await browser.url(URL);
-  // await browser.maximizeWindow();
-
-  // await $('#user-name').setValue('problem_user');
-  // await $('#password').setValue('secret_sauce');
-  // await $('#login-button').click();
-
-  // await browser.pause(2000);
-  // await browser.back();
-  // await browser.pause(2000);
-  // await browser.forward();
-  // await browser.pause(2000);
-
-  // await browser.debug();
-});
+);
 
 When(
-  /^Inventory page should list (.*) products$/,
-  async function (numberOfProducts) {
+  /^Inventory page should (.*)\s?list (.*) products$/,
+
+  async function (negativeCheck, numberOfProducts) {
+    console.log(`>>>When step testID: ${this.testID}`);
+
+    // throw Error(`failed...`);
     if (!numberOfProducts)
       throw Error(`Invalid number of products provided : ${numberOfProducts}`);
     let productPanels = await $$(`//div[@class='inventory_item']`);
@@ -69,7 +84,7 @@ Then(/^Validate all products have valid price$/, async function () {
     let price = +value.replace('$', '');
     prices.push(price);
   }
-  console.log(prices);
+  // console.log(prices);
 
   prices.forEach((price) => {
     expect(price).to.be.above(0);

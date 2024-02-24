@@ -278,8 +278,21 @@ export const config: Options.Testrunner = {
    * @param {ITestCaseHookParameter} world    world object containing information on pickle and test step
    * @param {object}                 context  Cucumber World object
    */
-  // beforeScenario: function (world, context) {
-  // },
+  beforeScenario: function (world, context) {
+    //get the testID from the Scenario
+    // console.log(`world obj : ${JSON.stringify(world)}`);
+    let arr = world.pickle.name.split(/:/);
+    //set it to the Cucumber World object
+    if (arr.length > 0) {
+      //@ts-ignore
+      context.testID = arr[0];
+    }
+    //@ts-ignore
+    if (!context.testID)
+      throw Error(
+        `Error getting testID for current scenario: ${world.pickle.name}`
+      );
+  },
   /**
    *
    * Runs before a Cucumber Step.
@@ -288,6 +301,7 @@ export const config: Options.Testrunner = {
    * @param {object}             context  Cucumber World object
    */
   // beforeStep: function (step, scenario, context) {
+
   // },
   /**
    *
@@ -300,8 +314,12 @@ export const config: Options.Testrunner = {
    * @param {number}             result.duration  duration of scenario in milliseconds
    * @param {object}             context          Cucumber World object
    */
-  // afterStep: function (step, scenario, result, context) {
-  // },
+  afterStep: async function (step, scenario, result, context) {
+    //Take screenshot if failed
+    if (!result.passed) {
+      await browser.takeScreenshot();
+    }
+  },
   /**
    *
    * Runs after a Cucumber Scenario.

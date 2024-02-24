@@ -1,0 +1,25 @@
+{
+  "id": "48fb66be-4af3-4bab-ad5e-076360b998e2",
+  "text": "As a standard user I Login to inventory app",
+  "type": "Context",
+  "argument": {
+    "dataTable": {
+      "rows": [
+        { "cells": [{ "value": "userType" }, { "value": "Username" }] },
+        { "cells": [{ "value": "StdUser" }, { "value": "standard_user" }] },
+        { "cells": [{ "value": "ProbUser" }, { "value": "problem_user" }] },
+        {
+          "cells": [
+            { "value": "PerfUser" },
+            { "value": "performance_glitch_user" }
+          ]
+        }
+      ]
+    }
+  },
+  "astNodeIds": [
+    "ecd36cd0-59d6-4e5a-b18b-ec68c1d2acd1",
+    "19bc8cfe-8390-48d2-af53-b3ff6eefb813"
+  ],
+  "keyword": "Given "
+}
