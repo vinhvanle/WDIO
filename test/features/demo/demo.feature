@@ -1,7 +1,7 @@
 Feature: Demo Feature
 
 
-    # @demo
+    @smoke
     Scenario Outline: Run first demo feature
         Given Google page is opened
         When Search with <searchItem>

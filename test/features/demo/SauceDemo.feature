@@ -4,8 +4,8 @@ Feature: Sauce Demo
 
     Scenario Outline: Inventory Demo
         Given Login to inventory app at <URL>
-        # When Inventory page should list <numberOfProducts> products
-        # Then Validate all products have valid price
+        When Inventory page should list <numberOfProducts> products
+        Then Validate all products have valid price
 
 
         Examples:

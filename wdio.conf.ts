@@ -1,4 +1,11 @@
 import type { Options } from '@wdio/types';
+import dotenv from 'dotenv';
+dotenv.config();
+
+let headless = process.env.HEADLESS;
+let debug = process.env.DEBUG;
+// console.log(`>> The headless tag: ${headless}`);
+
 export const config: Options.Testrunner = {
   //
   // ====================
@@ -61,9 +68,28 @@ export const config: Options.Testrunner = {
   //
   capabilities: [
     {
+      /**
+       * Additional chrome options:
+       * --disable-dev-shm-usage
+       * --no-sandbox
+       * --window-size=1920,1080
+       * --disable-gpu
+       * --proxy-server=http://domain
+       * binary=<location>
+       * --auth-server-whitelist="_"
+       */
       browserName: 'chrome',
       'goog:chromeOptions': {
-        args: ['--disable-web-security'],
+        args:
+          headless.toUpperCase() === 'Y'
+            ? [
+                '--disable-web-security',
+                '--headless',
+                '--disable-dev-shm-usage',
+                '--no-sandbox',
+                '--window-size=1920,1080',
+              ]
+            : [],
       },
       acceptInsecureCerts: true,
       timeouts: { implicit: 15000, pageLoad: 200000, script: 30000 },
@@ -77,7 +103,7 @@ export const config: Options.Testrunner = {
   // Define all options that are relevant for the WebdriverIO instance here
   //
   // Level of logging verbosity: trace | debug | info | warn | error | silent
-  logLevel: 'error',
+  logLevel: debug.toUpperCase() === 'Y' ? 'info' : 'error',
   //
   // Set specific log levels per logger
   // loggers:
@@ -222,7 +248,13 @@ export const config: Options.Testrunner = {
    * @param {Array.<String>} specs        List of spec file paths that are to be run
    * @param {object}         browser      instance of created browser/device session
    */
+  /**
+   * ********IMPORTANT********
+   * enable Before hook so the environment specific options are passed in
+   */
   // before: function (capabilities, specs) {
+  //   browser.options['environment'] = config.environment;
+  //   browser.options['sauceDemoURL'] = config.sauceDemoURL;
   // },
   /**
    * Runs before a WebdriverIO command gets executed.

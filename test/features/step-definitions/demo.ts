@@ -62,7 +62,6 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
    * 3. Click an type
    * 4. Slow typing
    */
-
   // await browser.url(`${URL}/inputs`);
   // //1. + 2. + 3.
   // let ele = await $(`input[type=number]`);
@@ -71,7 +70,6 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
   // // await ele.click();
   // // await ele.setValue(12345);
   // // await ele.addValue('9876');
-
   // //4.
   // let num = 12345;
   // let strNum = num.toString();
@@ -81,24 +79,18 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
   //   await browser.pause(1000);
   //   await browser.keys(char);
   // }
-
   /**2. Dropdown
    * Actions:
    * 1. Assert default option is selected
    * 2. Select by attribute, text, index
    * 3. Get a list of options
    */
-
   // await browser.url(`${URL}/dropdown`);
-
   // //1. Assert default option is selected
-
   // let ele = await $('//select[@id="dropdown"]/option[@selected="selected"]');
   // let val = await ele.getText();
   // expect(val).to.equal('Please select an option');
-
   // //2. Select a specific option
-
   // let ddEle = await $('#dropdown');
   // await browser.pause(1000);
   // await ddEle.selectByAttribute('value', '1');
@@ -106,7 +98,6 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
   // await ddEle.selectByIndex(2);
   // await browser.pause(1000);
   // await ddEle.selectByVisibleText('Option 1');
-
   // //3. Get a list of options
   // let ddEle = await $$('//select[@id="dropdown"]/option');
   // let options = [];
@@ -115,14 +106,12 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
   //   let text = await ele.getText();
   //   options.push(text);
   // });
-
   // //traditional way to compare two arrays
   // for (let i = 0; i < options.length; i++) {
   //   expect(options[i]).to.equal(expectedOptions[i]);
   // }
   // //faster way to compare two arrays
   // expect(options).to.deep.equal(expectedOptions);
-
   /**
    * 3. Checkbox
    * Actions:
@@ -131,9 +120,7 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
    * 3. Assert if option is selected
    * 4. Select all options
    */
-
   // await browser.url(`${URL}/checkboxes`);
-
   // let eleArray = await $$(`//form[@id="checkboxes"]/input`);
   // let result = [];
   // let expectedResult = [true, true];
@@ -146,9 +133,7 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
   //   result.push(isChecked);
   // }
   // console.log(result);
-
   // expect(result).to.deep.equal(expectedResult);
-
   /**
    * 4. Windows handling
    * Steps:
@@ -163,15 +148,12 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
    * 3. getWindowHandles()
    * 4. switchToWindow()
    */
-
   // await browser.url(`${URL}/windows`);
-
   // //Open new windows
   // (await $('=Click Here')).click();
   // (await $('=Elemental Selenium')).click();
   // let firstWindowTitle = await browser.getTitle();
   // let firstWindowHandle = await browser.getWindowHandle();
-
   // //Switch to specific window
   // let winHandles = await browser.getWindowHandles();
   // let currentWindowHandle = await browser.getWindowHandle();
@@ -190,7 +172,6 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
   // await browser.switchToWindow(firstWindowHandle);
   // let parentTxt = await (await $('<h3>')).getText();
   // console.log(`>>Current page header: ${parentTxt}`);
-
   /**
    *4. Handling alerts
 
@@ -201,9 +182,7 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
    4. getAlertText()
    5. sendAlertText()
    */
-
   // await browser.url(`${URL}/javascript_alerts`);
-
   // await (await $(`button=Click for JS Alert`)).click();
   // if (await browser.isAlertOpen()) {
   //   await browser.pause(2000);
@@ -211,7 +190,6 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
   //   let result = await (await $('#result')).getText();
   //   expect(result).to.equal('You successfully clicked an alert');
   // }
-
   // await (await $(`button=Click for JS Confirm`)).click();
   // if (await browser.isAlertOpen()) {
   //   await browser.pause(2000);
@@ -219,7 +197,6 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
   //   let result = await (await $('#result')).getText();
   //   expect(result).to.equal('You clicked: Cancel');
   // }
-
   // await (await $(`button=Click for JS Prompt`)).click();
   // if (await browser.isAlertOpen()) {
   //   await browser.pause(1000);
@@ -229,72 +206,53 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
   //   let result = await (await $('#result')).getText();
   //   expect(result).to.equal('You entered: hello from Automation');
   // }
-
   // await browser.url(
   //   `https://admin:admin@the-internet.herokuapp.com/basic_auth`
   // );
-
   // let text = await $(`//*[@id="content"]/div/p`).getText();
   // expect(text).to.equal(
   //   'Congratulations! You must have the proper credentials.'
   // );
-
   /**
    * 5. File Upload
    */
-
   // await browser.url(`${URL}/upload`);
   // await $('#file-upload').addValue(
   //   `${process.cwd()}/data/file-upload/dummy.txt`
   // );
   // await (await $('#file-submit')).click();
-
   // let result = await (await $('#uploaded-files')).getText();
   // expect(result).to.equal('dummy.txt');
-
   /**
    * 6. Frames
    * Methods used:
    * 1. switchToFrame
    * 2. switchToParentFrame
    */
-
   // await browser.url(`${URL}/frames`);
-
   // await $(`=iFrame`).click();
-
   // //Switch to frame
-
   // let iframe = await $(`#mce_0_ifr`);
   // await browser.switchToFrame(iframe);
-
   // //iframe interaction
-
   // await $('#tinymce').click();
-
   // await browser.keys(['Meta', 'A']);
   // await browser.pause(2000);
   // await browser.keys('Delete');
   // await browser.pause(2000);
-
   // await $('#tinymce').addValue('hahahahahahaha');
-
   // //back to parent frame
   // await browser.switchToParentFrame();
-
   // expect(await $('<h3>').getText()).to.equal(
   //   'An iFrame containing the TinyMCE WYSIWYG Editor'
   // );
-
   /**
    * 7. Basic scrolling
    * Methods: (Element methods)
    * 1. scrollIntoView
    */
   // await browser.url('https://amazon.co.uk');
-
   // await $('span=Best Sellers in Books').scrollIntoView();
-
   /**
    * Web tables
    * What are we going to cover:
@@ -305,21 +263,16 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
    * 5. Get single cell value [based on another cell]
    *
    */
-
   // await browser.url(`${URL}/tables`);
-
   // //1. Check number of rows and columns
   // let rowCount = await $$(`//table[@id='table1']/tbody/tr`).length;
   // expect(rowCount).to.equal(4);
   // console.log(`>> Number of rows: ${rowCount}`);
-
   // let colCount = await $$(`//table[@id='table1']/thead/tr/th`).length;
   // expect(colCount).to.equal(6);
   // console.log(`>> Number of columns: ${colCount}`);
-
   //2. get whole table data
   // let data = [];
-
   // for (let i = 0; i < rowCount; i++) {
   //   let personObj = {
   //     lastname: '',
@@ -341,10 +294,8 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
   //   data.push(personObj);
   // }
   // console.log(`>>> Data: ${JSON.stringify(data)}`);
-
   // //3. Get single row (based on a condition)
   // let data = [];
-
   // for (let i = 0; i < rowCount; i++) {
   //   let personObj = {
   //     lastname: '',
@@ -373,7 +324,6 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
   //   }
   // }
   // console.log(data);
-
   // //4. Get single column
   // let arr = [];
   // for (let i = 0; i < rowCount; i++) {
@@ -383,9 +333,7 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
   //   arr.push(cellValue);
   // }
   // console.log(arr);
-
   // //5. Get single cell value based on another cell
-
   // let arr = [];
   // for (let i = 0; i < rowCount; i++) {
   //   let price = await $(
@@ -394,13 +342,11 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
   //   let firstname = await $(
   //     `//table[@id='table1']/tbody/tr[${i + 1}]/td[2]`
   //   ).getText();
-
   //   if (+price.replace('$', '') > 50) {
   //     arr.push(firstname);
   //   }
   // }
   // console.log(arr);
-
   /**
    *8. Scrolling
 
@@ -415,12 +361,10 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
   //   window.scrollBy(0, window.innerHeight);
   // });
   // await browser.pause(2000);
-
   // //SCroll top
   // await browser.execute(() => {
   //   window.scrollBy(0, -window.innerHeight);
   // });
-
   // /**
   //  * Invisible portion
   //  * windows object:
@@ -431,11 +375,9 @@ When(/^Perform web interactions at (.*)$/, async function (URL) {
   // await browser.execute(() => {
   //   window.scrollTo(0, document.body.scrollHeight);
   // });
-
   // await browser.pause(2000);
   // await browser.execute(() => {
   //   window.scrollTo(0, document.body.scrollTop);
   // });
-
-  await browser.debug();
+  // await browser.debug();
 });
