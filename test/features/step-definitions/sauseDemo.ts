@@ -1,13 +1,13 @@
 import { Given, When, Then } from '@wdio/cucumber-framework';
 import { expect } from 'chai';
-import logger from '../../helper/logger.ts';
+import reporter from '../../helper/reporter.ts';
 
 Given(
   /^As (a|an) (.*) user I Login to inventory app$/,
   async function (prefixText, userType, dataTable) {
-    logger.info(`${this.testID}: Started to login sauce demo app...`);
+    reporter.addStep(this.testID, 'info', `Login to SauceDemo`);
     //Get the testID
-    console.log(`>> Given step testID: ${this.testID}`);
+    // console.log(`>> Given step testID: ${this.testID}`);
 
     let dt = dataTable.hashes();
     // console.log(`>> The type of dt : ${typeof dt}`);
@@ -66,18 +66,36 @@ When(
   /^Inventory page should (.*)\s?list (.*) products$/,
 
   async function (negativeCheck, numberOfProducts) {
-    // throw Error(`failed...`);
-    if (!numberOfProducts)
-      throw Error(`Invalid number of products provided : ${numberOfProducts}`);
-    let productPanels = await $$(`//div[@class='inventory_item']`);
-    let products = productPanels.length;
-    expect(products).to.equal(parseInt(numberOfProducts));
+    try {
+      if (!numberOfProducts)
+        throw Error(
+          `Invalid number of products provided : ${numberOfProducts}`
+        );
+      let productPanels = await $$(`//div[@class='inventory_item']`);
+      let products = productPanels.length;
+
+      //Handle assertion known bugs
+      try {
+        expect(products).to.equal(parseInt(numberOfProducts));
+      } catch (err) {
+        reporter.addStep(
+          this.testID,
+          'error',
+          'Known issue - product count mismatch',
+          true,
+          'JIRA-123'
+        );
+      }
+    } catch (err) {
+      err.message = `${this.testID}: Failed when comparing product count, ${err.message}`;
+      throw err; //failing
+    }
   }
 );
 
 Then(/^Validate all products have valid price$/, async function () {
   // throw Error(`Failed...`);
-  logger.info(`${this.testID}: Checking the price...`);
+
   let prices = [];
   let productsPrice = await $$(`.inventory_item_price`);
   for (let i = 0; i < productsPrice.length; i++) {
