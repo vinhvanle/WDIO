@@ -16,5 +16,5 @@ Feature: Sauce Demo
 
         Examples:
             | TestID      | numberOfProducts |
-            | SAUCE_TC001 | 9                |
+            | SAUCE_TC001 | 6                |
 

@@ -7,7 +7,6 @@ dotenv.config();
 
 let headless = process.env.HEADLESS;
 let debug = process.env.DEBUG;
-// console.log(`>> The headless tag: ${headless}`);
 
 export const config: Options.Testrunner = {
   //
@@ -177,6 +176,7 @@ export const config: Options.Testrunner = {
         outputDir: 'allure-results',
         disableWebdriverStepsReporting: true,
         useCucumberStepReporter: true,
+        reportedEnvironmentVars: {},
       },
     ],
   ],
@@ -299,7 +299,7 @@ export const config: Options.Testrunner = {
    */
   beforeScenario: function (world, context) {
     //get the testID from the Scenario
-    // console.log(`world obj : ${JSON.stringify(world)}`);
+
     let arr = world.pickle.name.split(/:/);
     //set it to the Cucumber World object
     if (arr.length > 0) {
@@ -358,6 +358,11 @@ export const config: Options.Testrunner = {
    * @param {GherkinDocument.IFeature} feature  Cucumber feature object
    */
   // afterFeature: function (uri, feature) {
+  //   let allureReporter = browser.options.reporters[1][1];
+
+  //   allureReporter.reportedEnvironmentVars = {
+  //     Environment: browser.options.environment,
+  //   };
   // },
 
   /**
