@@ -15,7 +15,7 @@ async function GET(
   }
   baseURL = baseURL.trim();
   endpoint = endpoint.trim();
-  reporter.addStep(testID, 'info', `Making a get call to ${endpoint}`);
+  reporter.addStep(testID, 'info', `Making a GET call to ${endpoint}`);
   try {
     return await request(baseURL)
       .get(endpoint)
@@ -28,8 +28,34 @@ async function GET(
     throw err;
   }
 }
+async function POST(
+  testID: string,
+  baseURL: string,
+  endpoint: string,
+  authToken: string,
+  payload: object
+) {
+  if (!baseURL || !endpoint) {
+    throw Error(
+      `Given baseURL: ${baseURL} and/or endpoint: ${endpoint} is invalid`
+    );
+  }
+  baseURL = baseURL.trim();
+  endpoint = endpoint.trim();
+  reporter.addStep(testID, 'info', `Making a POST call to ${endpoint}`);
+  try {
+    return await request(baseURL)
+      .post(endpoint)
+      .auth(authToken, { type: 'bearer' })
+      .set('Content-Type', 'application/json')
+      .send(payload);
+  } catch (err) {
+    err.message = `Error making a POST call to ${endpoint}, ${err.message}`;
+    throw err;
+  }
+}
 
-export default { GET };
+export default { GET, POST };
 /**
  * 'https://reqres.in'
  * /api/users?page=2
