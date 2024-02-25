@@ -1,10 +1,11 @@
 import { Given, When, Then } from '@wdio/cucumber-framework';
 import { expect } from 'chai';
-import 'dotenv';
+import logger from '../../helper/logger.ts';
 
 Given(
   /^As (a|an) (.*) user I Login to inventory app$/,
   async function (prefixText, userType, dataTable) {
+    logger.info(`${this.testID}: Started to login sauce demo app...`);
     //Get the testID
     console.log(`>> Given step testID: ${this.testID}`);
 
@@ -65,8 +66,6 @@ When(
   /^Inventory page should (.*)\s?list (.*) products$/,
 
   async function (negativeCheck, numberOfProducts) {
-    console.log(`>>>When step testID: ${this.testID}`);
-
     // throw Error(`failed...`);
     if (!numberOfProducts)
       throw Error(`Invalid number of products provided : ${numberOfProducts}`);
@@ -77,6 +76,8 @@ When(
 );
 
 Then(/^Validate all products have valid price$/, async function () {
+  // throw Error(`Failed...`);
+  logger.info(`${this.testID}: Checking the price...`);
   let prices = [];
   let productsPrice = await $$(`.inventory_item_price`);
   for (let i = 0; i < productsPrice.length; i++) {

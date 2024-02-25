@@ -11,11 +11,12 @@
     "chai": "^5.1.0",
     "dotenv": "^16.4.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "winston": "^3.11.0"
   },
   "scripts": {
     "wdio": "wdio run ./wdio.conf.ts",
-    "test:debug": "export HEADLESS=N && export DEBUG=Y && npx wdio config/wdio.test.conf.ts --cucumberOpts.tagExpression='@demo'",
+    "test:debug": "export HEADLESS=N && export DEBUG=Y && npx wdio config/wdio.test.conf.ts --cucumberOpts.tagExpression='@demo' > output.txt",
     "test:demo": "export HEADLESS=N && export DEBUG=N && npx wdio config/wdio.test.conf.ts --cucumberOpts.tagExpression='@demo'",
     "test:smoke": "export HEADLESS=Y && export DEBUG=N && npx wdio config/wdio.test.conf.ts --cucumberOpts.tagExpression='@smoke'",
     "uat:demo": "export HEADLESS=N && export DEBUG=N && npx wdio config/wdio.uat.conf.ts --cucumberOpts.tagExpression='@demo'",
