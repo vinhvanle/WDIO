@@ -1,6 +1,6 @@
 Feature: Sauce Demo
 
-    @demo
+    # @demo
 
     Scenario Outline: <TestID>: Inventory Demo
         Given As a standard user I Login to inventory app
