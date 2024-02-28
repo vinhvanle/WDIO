@@ -96,6 +96,15 @@ export const config: Options.Testrunner = {
       acceptInsecureCerts: true,
       timeouts: { implicit: 15000, pageLoad: 200000, script: 30000 },
     },
+    // {
+    //   browserName: 'firefox',
+    //   acceptInsecureCerts: true,
+    //   timeouts: {
+    //     implicit: 15000,
+    //     pageLoad: 200000,
+    //     script: 30000,
+    //   },
+    // },
   ],
 
   //
@@ -145,7 +154,7 @@ export const config: Options.Testrunner = {
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  // services: [],
+  // services: ['geckodriver'],
   //
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber
@@ -268,13 +277,12 @@ export const config: Options.Testrunner = {
    * ********IMPORTANT********
    * enable Before hook so the environment specific options are passed in
    */
-  // before: function (capabilities, specs) {
-  // browser.options['environment'] = config.environment;
-  // browser.options['sauceDemoURL'] = config.sauceDemoURL;
-  // if (browser.options['environment']) {
-  //   this.environment = browser.options['environment'];
-  // }
-  // },
+  before: function (capabilities, specs) {
+    browser.options.reporters[1][1]['reportedEnvironmentVars'] = {
+      Instance: browser.options.environment,
+    };
+    console.log(JSON.stringify(browser.options));
+  },
   /**
    * Runs before a WebdriverIO command gets executed.
    * @param {string} commandName hook command name
@@ -357,12 +365,8 @@ export const config: Options.Testrunner = {
    * @param {string}                   uri      path to feature file
    * @param {GherkinDocument.IFeature} feature  Cucumber feature object
    */
-  // afterFeature: function (uri, feature) {
-  //   let allureReporter = browser.options.reporters[1][1];
+  // afterFeature: async function (uri, feature) {
 
-  //   allureReporter.reportedEnvironmentVars = {
-  //     Environment: browser.options.environment,
-  //   };
   // },
 
   /**

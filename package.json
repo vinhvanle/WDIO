@@ -11,9 +11,11 @@
     "@wdio/spec-reporter": "^8.32.2",
     "chai": "^5.1.0",
     "dotenv": "^16.4.5",
+    "geckodriver": "^4.3.3",
     "supertest": "^6.3.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
+    "wdio-geckodriver-service": "^5.0.2",
     "winston": "^3.11.0"
   },
   "scripts": {

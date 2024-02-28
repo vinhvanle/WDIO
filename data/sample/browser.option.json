@@ -18,7 +18,7 @@
   "enableDirectConnect": true,
   "strictSSL": true,
   "cacheDir": "/var/folders/ms/mw_7kfjd42v6v_6yf7ffsc_00000gn/T",
-  "port": 60836,
+  "port": 61444,
   "requestedCapabilities": {
     "browserName": "chrome",
     "goog:chromeOptions": {
@@ -45,7 +45,18 @@
   "excludeDriverLogs": [],
   "bail": 0,
   "framework": "cucumber",
-  "reporters": ["spec", ["allure", { "outputDir": "allure-results" }]],
+  "reporters": [
+    "spec",
+    [
+      "allure",
+      {
+        "outputDir": "allure-results",
+        "disableWebdriverStepsReporting": true,
+        "useCucumberStepReporter": true,
+        "reportedEnvironmentVars": { "Instance": "TEST" }
+      }
+    ]
+  ],
   "services": [],
   "maxInstances": 10,
   "maxInstancesPerCapability": 100,
@@ -82,7 +93,7 @@
     "strict": false,
     "ignoreUndefinedDefinitions": false
   },
-  "onPrepare": [],
+  "onPrepare": [null],
   "onWorkerStart": [],
   "onWorkerEnd": [],
   "before": [null],
@@ -99,9 +110,9 @@
   "beforeAssertion": [],
   "afterAssertion": [],
   "beforeFeature": [],
-  "beforeScenario": [],
+  "beforeScenario": [null],
   "beforeStep": [],
-  "afterStep": [],
+  "afterStep": [null],
   "afterScenario": [],
   "afterFeature": [],
   "_": ["config/wdio.test.conf.ts", "config/wdio.test.conf.ts"],
@@ -109,5 +120,7 @@
   "$0": "/Users/vinhvanle/Desktop/Learning/WDIO/node_modules/.bin/wdio",
   "ignoredWorkerServices": [],
   "environment": "TEST",
-  "sauceDemoURL": "https://saucedemo.com"
+  "sauceDemoURL": "https://saucedemo.com",
+  "reqresBaseURL": "https://reqres.in",
+  "nopCommerceBaseURL": "https://admin-demo.nopcommerce.com"
 }
