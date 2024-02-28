@@ -1,6 +1,6 @@
 Feature: Customer search
 
-    @demo
+    @demo @smoke
 
     Scenario Outline: <TestID>: Search external customers
 
