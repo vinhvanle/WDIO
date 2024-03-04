@@ -3,6 +3,7 @@
   "type": "module",
   "devDependencies": {
     "@types/chai": "^4.3.11",
+    "@types/mssql": "^9.1.5",
     "@types/supertest": "^6.0.2",
     "@wdio/allure-reporter": "^8.32.2",
     "@wdio/cli": "^8.32.3",
@@ -12,6 +13,7 @@
     "chai": "^5.1.0",
     "dotenv": "^16.4.5",
     "geckodriver": "^4.3.3",
+    "mssql": "^10.0.2",
     "supertest": "^6.3.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3",

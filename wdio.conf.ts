@@ -281,7 +281,7 @@ export const config: Options.Testrunner = {
     browser.options.reporters[1][1]['reportedEnvironmentVars'] = {
       Instance: browser.options.environment,
     };
-    console.log(JSON.stringify(browser.options));
+    // console.log(JSON.stringify(browser.options));
   },
   /**
    * Runs before a WebdriverIO command gets executed.
