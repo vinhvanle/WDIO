@@ -26,6 +26,7 @@
     "test:demo": "export HEADLESS=N && export DEBUG=N && npx wdio config/wdio.test.conf.ts --cucumberOpts.tagExpression='@demo'",
     "test:smoke": "export HEADLESS=Y && export DEBUG=N && npx wdio config/wdio.test.conf.ts --cucumberOpts.tagExpression='@smoke'",
     "uat:demo": "export HEADLESS=N && export DEBUG=N && npx wdio config/wdio.uat.conf.ts --cucumberOpts.tagExpression='@demo'",
-    "uat:smoke": "export HEADLESS=Y && export DEBUG=N && npx wdio config/wdio.uat.conf.ts --cucumberOpts.tagExpression='@smoke'"
+    "uat:smoke": "export HEADLESS=Y && export DEBUG=N && npx wdio config/wdio.uat.conf.ts --cucumberOpts.tagExpression='@smoke'",
+    "sn:demo": "export HEADLESS=N && export DEBUG=N && npx wdio config/wdio.sn.conf.ts --cucumberOpts.tagExpression='@demo'"
   }
 }

@@ -65,7 +65,7 @@ Given(/^Get list of (.*) from reqres.in$/, async function (endpointRef) {
   }
 });
 
-When(/^An as (.*) user login to nopcommerce site$/, async function (user) {
+When(/^As an (.*) user login to nopcommerce site$/, async function (user) {
   if (!user) throw Error(`Given user: ${user} is invalid`);
   user = user.trim().toUpperCase();
   try {
