@@ -4,5 +4,9 @@
     "QUERY_PARAM": {
       "pages": 2
     }
+  },
+  "SN": {
+    "SOW_HOME": "/now/sow/home",
+    "INTERACTION": "/record/interaction"
   }
 }

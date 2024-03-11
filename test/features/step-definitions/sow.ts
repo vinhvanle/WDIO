@@ -40,7 +40,7 @@ Then(/^I navigate to (.*) application$/, async function (application) {
     );
     await serviceNowLoginPage.navigateTo(
       //@ts-ignore
-      `${browser.options.serviceNowBaseURL}/now/sow/home`
+      `${browser.options.serviceNowBaseURL}${constants.SN.SOW_HOME}`
     );
   } catch (err) {
     err.message = `Failed at navigating to ${application} application, ${err.message}`;
@@ -58,7 +58,7 @@ When(/^I open new (.*) form in SOW$/, async function (form) {
       case 'INTERACTION':
         await serviceNowSowPage.openNewInteractionForm(this.testID);
         let url = await browser.getUrl();
-        expect(url).to.include('/record/interaction');
+        expect(url).to.include(constants.SN.INTERACTION);
         break;
     }
   } catch (err) {

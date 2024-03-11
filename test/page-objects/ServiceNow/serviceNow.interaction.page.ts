@@ -98,8 +98,7 @@ class InteractionPage extends Page {
     try {
       await this.typeInto(await this.companyInputBox, company);
       const sys_id = fieldValues.INTERACTION.SYS_ID[company];
-      console.log(sys_id);
-
+      // console.log(sys_id);
       await this.click(await this.getReferenceRecord(sys_id));
     } catch (err) {
       err.message = `Failed at typing Company with ${company}, ${err.message}`;
@@ -111,7 +110,7 @@ class InteractionPage extends Page {
     try {
       await this.typeInto(await this.openedForInputBox, openedFor);
       const sys_id = fieldValues.INTERACTION.SYS_ID[openedFor];
-      console.log(sys_id);
+      // console.log(sys_id);
       await this.click(await this.getReferenceRecord(sys_id));
     } catch (err) {
       err.message = `Failed at typing 'Opened For' with ${openedFor}, ${err.message}`;
@@ -123,7 +122,7 @@ class InteractionPage extends Page {
     try {
       await this.typeInto(await this.assignedToInputBox, assignedTo);
       const sys_id = fieldValues.INTERACTION.SYS_ID[assignedTo];
-      console.log(sys_id);
+      // console.log(sys_id);
       await this.click(await this.getReferenceRecord(sys_id));
     } catch (err) {
       err.message = `Failed at typing 'Assigned To' with ${assignedTo}, ${err.message}`;
