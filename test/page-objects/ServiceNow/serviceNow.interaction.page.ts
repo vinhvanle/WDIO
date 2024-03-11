@@ -2,6 +2,8 @@ import reporter from '../../helper/reporter.ts';
 import Page from '../page.ts';
 import { expect, should, assert } from 'chai';
 
+import fieldValues from '../../../data/constants/fieldValues.json' assert { type: 'json' };
+
 class InteractionPage extends Page {
   constructor() {
     super();
@@ -19,22 +21,12 @@ class InteractionPage extends Page {
     return $(`>>>input[name="company_input"]`);
   }
 
-  get ACMEAmerica() {
-    return $(`>>>li[id="98c37b193790200044e0bfc8bcbe5dbe"]`);
-  }
   get openedForInputBox() {
     return $(`>>>input[name="opened_for_input"]`);
-  }
-  get abrahamLincoln() {
-    return $(`>>>li[id="a8f98bb0eb32010045e1a5115206fe3a"]`);
   }
 
   get assignedToInputBox() {
     return $(`>>>input[name="assigned_to_input"]`);
-  }
-
-  get ITILUser() {
-    return $(`>>>li[id="8174ed6493b402109c6436befaba107a"]`);
   }
 
   //Get dropdowns
@@ -50,6 +42,12 @@ class InteractionPage extends Page {
   get newTicketChoice() {
     return $(`>>>div[id="New ticket"]`);
   }
+  get statusCallChoice() {
+    return $(`>>>div[id="Status Call"]`);
+  }
+  get hangUpChoice() {
+    return $(`>>>div[id="Hang up/Wrong number"]`);
+  }
 
   get typeDropdownTrigger() {
     return $(`>>>button[aria-label="Type"]`);
@@ -62,6 +60,12 @@ class InteractionPage extends Page {
   get phoneChoice() {
     return $(`>>>div[id="phone"]`);
   }
+  get emailChoice() {
+    return $(`>>>div[id="Email]`);
+  }
+  get walkInChoice() {
+    return $(`>>>div[id="Walk-in"]`);
+  }
 
   get saveBtn() {
     return $(`>>>button[data-tooltip="Save record and remain here"]`);
@@ -71,11 +75,32 @@ class InteractionPage extends Page {
    * Define Page Actions
    */
 
+  async getReferenceRecord(sysID: string) {
+    if (!sysID) throw Error(`Given sysID: ${sysID} is invalid`);
+    try {
+      return await $(`>>>li[id="${sysID}"]`);
+    } catch (err) {
+      err.message = `Failed at getting the reference value with sysID: ${sysID}, ${err.message}`;
+      throw err;
+    }
+  }
+
+  // async getDropdownChoice(choiceValue: string) {
+  //   if (!choiceValue)
+  //     throw Error(`Given choiceValue: ${choiceValue} is invalid`);
+  //   try {
+  //     return await $(`>>>div[id="${choiceValue}"]`);
+  //   } catch (err) {}
+  // }
+
   async fillCompany(company: string) {
     if (!company) throw Error(`Given company: ${company} is invalid`);
     try {
       await this.typeInto(await this.companyInputBox, company);
-      await this.click(await this.ACMEAmerica);
+      const sys_id = fieldValues.INTERACTION.SYS_ID[company];
+      console.log(sys_id);
+
+      await this.click(await this.getReferenceRecord(sys_id));
     } catch (err) {
       err.message = `Failed at typing Company with ${company}, ${err.message}`;
       throw err;
@@ -85,7 +110,9 @@ class InteractionPage extends Page {
     if (!openedFor) throw Error(`Given openedFor: ${openedFor} is invalid`);
     try {
       await this.typeInto(await this.openedForInputBox, openedFor);
-      await this.click(await this.abrahamLincoln);
+      const sys_id = fieldValues.INTERACTION.SYS_ID[openedFor];
+      console.log(sys_id);
+      await this.click(await this.getReferenceRecord(sys_id));
     } catch (err) {
       err.message = `Failed at typing 'Opened For' with ${openedFor}, ${err.message}`;
       throw err;
@@ -95,7 +122,9 @@ class InteractionPage extends Page {
     if (!assignedTo) throw Error(`Given assignedTo: ${assignedTo} is invalid`);
     try {
       await this.typeInto(await this.assignedToInputBox, assignedTo);
-      await this.click(await this.ITILUser);
+      const sys_id = fieldValues.INTERACTION.SYS_ID[assignedTo];
+      console.log(sys_id);
+      await this.click(await this.getReferenceRecord(sys_id));
     } catch (err) {
       err.message = `Failed at typing 'Assigned To' with ${assignedTo}, ${err.message}`;
       throw err;
@@ -114,7 +143,6 @@ class InteractionPage extends Page {
   async chosePhone() {
     try {
       await this.click(await this.typeDropdownTrigger);
-      await browser.pause(3000);
       await this.click(await this.phoneChoice);
     } catch (err) {
       err.message = `Failed at choosing Phone, ${err.message}`;

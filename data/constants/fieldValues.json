@@ -1,0 +1,14 @@
+{
+  "INTERACTION": {
+    "TEXT_NAME": {
+      "COMPANY": "ACME",
+      "END_USER": "Abraham Lincoln",
+      "AGENT_USER": "ITIL User"
+    },
+    "SYS_ID": {
+      "ACME": "98c37b193790200044e0bfc8bcbe5dbe",
+      "Abraham Lincoln": "a8f98bb0eb32010045e1a5115206fe3a",
+      "ITIL User": "8174ed6493b402109c6436befaba107a"
+    }
+  }
+}

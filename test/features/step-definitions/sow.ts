@@ -3,6 +3,7 @@ import { expect, should, assert } from 'chai';
 import reporter from '../../helper/reporter.ts';
 import apiHelper from '../../helper/apiHelper.ts';
 import constants from '../../../data/constants/constants.json' assert { type: 'json' };
+import fieldValue from '../../../data/constants/fieldValues.json' assert { type: 'json' };
 import fs from 'fs';
 import serviceNowLoginPage from '../../page-objects/ServiceNow/serviceNow.login.page.ts';
 import serviceNowSowPage from '../../page-objects/ServiceNow/serviceNow.sow.page.ts';
@@ -69,10 +70,13 @@ When(/^I open new (.*) form in SOW$/, async function (form) {
 Then(/^I fill in mandatory fields$/, async function () {
   reporter.addStep(this.testID, 'info', `Filling in mandatory fields`);
   try {
+    const company = fieldValue.INTERACTION.TEXT_NAME.COMPANY;
+    const endUser = fieldValue.INTERACTION.TEXT_NAME.END_USER;
+    const agentUser = fieldValue.INTERACTION.TEXT_NAME.AGENT_USER;
     await serviceNowInteractionPage.fillInMandatoryFields(
-      'ACME',
-      'Abraham Lincoln',
-      'ITIL User'
+      company,
+      endUser,
+      agentUser
     );
     await browser.debug();
   } catch (err) {
