@@ -11,8 +11,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      RUNNER: ${{secrets.RUNNER}}
-      LOG_LEVEL: ${{secrets.LOG_LEVEL}}
       SERVICENOW_ADMIN_USERNAME: ${{secrets.SERVICENOW_ADMIN_USERNAME}}
       SERVICENOW_ADMIN_PASSWORD: ${{secrets.SERVICENOW_ADMIN_PASSWORD}}
     steps:
@@ -26,4 +24,4 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Running smoke tests
-        run: npm run test:smoke
+        run: npm run sn:smoke
