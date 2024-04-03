@@ -1,0 +1,14 @@
+[DONE] 1. Make the created records delete when the test script failed (done - delete from the world object sysIDArr)
+[DONE] 2. Make it so that when a record is generated through UI steps, the sys_id of that record is saved in the customWorld object: SysIDArr
+[DONE] 3. Modify ServiceNow instance so that it doesn't show the welcome modals for first time users. (Done)
+    - Article: https://www.servicenow.com/community/developer-articles/disable-modals-shown-on-login-after-san-diego-upgrade/ta-p/2306558
+    - created record: 
+        1. https://dev204202.service-now.com/now/nav/ui/classic/params/target/sys_user_preference.do%3Fsys_id%3D78a5b486931106109c6436befaba10df%26sysparm_record_target%3Dsys_user_preference%26sysparm_record_row%3D8%26sysparm_record_rows%3D11%26sysparm_record_list%3DnameSTARTSWITHoverview_help.visited%255EORDERBYname
+        2. https://dev204202.service-now.com/now/nav/ui/classic/params/target/sys_user_preference.do%3Fsys_id%3D33f8fc4e931106109c6436befaba104d%26sysparm_record_target%3Dsys_user_preference%26sysparm_record_row%3D2%26sysparm_record_rows%3D2%26sysparm_record_list%3DnameCONTAINSsow%255EORDERBYname
+[DONE] 4. Make it also when the scenario complete, test data is rolled back
+    Dev notes: Added an environment variable ROLLBACK, if ROLLBACK==='Y' then rollback, else do nothing
+[DONE] 5. improve the way sys_id is stored should also contain the table name or and api endpoint
+    Dev notes: I made it so that the sysIDArr also store the table name for the table for that record
+[DONE] 6. Modify the prepareTestData.deleteRecord so that it can delete record from any table
+[DONE] 7. Add API endpoint to constants.json
+    Dev notes: added TABLES and TABLE_API constants

@@ -33,6 +33,8 @@ Given(/^Get list of (.*) from reqres.in$/, async function (endpointRef) {
       throw Error(`Error getting endpoint: ${endpoint} from constants.json`);
     /**2. Make GET call by using apiHelper */
     let res;
+    let username = '';
+    let password = '';
     let testID = this.testID;
     await browser.call(async function () {
       res = await apiHelper.GET(
@@ -40,7 +42,8 @@ Given(/^Get list of (.*) from reqres.in$/, async function (endpointRef) {
         //@ts-ignore
         browser.options.reqresBaseURL,
         endpoint,
-        '',
+        username,
+        password,
         constants.REQRES.QUERY_PARAM
       );
     });

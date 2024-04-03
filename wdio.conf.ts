@@ -3,10 +3,14 @@ import type { Options } from '@wdio/types';
 import dotenv from 'dotenv';
 import allure from '@wdio/allure-reporter';
 import fs from 'fs';
+import prepareTestData from './test/helper/prepareTestData.ts';
+import reporter from './test/helper/reporter.ts';
+
 dotenv.config();
 
 let headless = process.env.HEADLESS;
 let debug = process.env.DEBUG;
+let rollback = process.env.ROLLBACK;
 
 export const config: Options.Testrunner = {
   //
@@ -94,7 +98,7 @@ export const config: Options.Testrunner = {
             : [],
       },
       acceptInsecureCerts: true,
-      timeouts: { implicit: 15000, pageLoad: 200000, script: 30000 },
+      timeouts: { implicit: 30000, pageLoad: 200000, script: 30000 },
     },
     // {
     //   browserName: 'firefox',
@@ -254,7 +258,8 @@ export const config: Options.Testrunner = {
    * @param  {object} specs    specs to be run in the worker process
    * @param  {number} retries  number of retries used
    */
-  // onWorkerEnd: function (cid, exitCode, specs, retries) {
+  // onWorkerEnd: async function (cid, exitCode, specs, retries) {
+
   // },
   /**
    * Gets executed just before initialising the webdriver session and test framework. It allows you
@@ -277,12 +282,11 @@ export const config: Options.Testrunner = {
    * ********IMPORTANT********
    * enable Before hook so the environment specific options are passed in
    */
-  before: function (capabilities, specs) {
-    browser.options.reporters[1][1]['reportedEnvironmentVars'] = {
-      Instance: browser.options.environment,
-    };
-    // console.log(JSON.stringify(browser.options));
-  },
+  // before: function (capabilities, specs) {
+  //   browser.options.reporters[1][1]['reportedEnvironmentVars'] = {
+  //     Instance: browser.options.environment,
+  //   };
+  // },
   /**
    * Runs before a WebdriverIO command gets executed.
    * @param {string} commandName hook command name
@@ -345,6 +349,36 @@ export const config: Options.Testrunner = {
     //Take screenshot if failed
     if (!result.passed) {
       await browser.takeScreenshot();
+
+      if (rollback.trim().toUpperCase() === 'Y') {
+        console.log(`<<<<<< Starting to clean up data >>>>>>`);
+
+        //Delete generated data
+        const records = context.sysIDArr;
+        if (records.length !== 0) {
+          try {
+            //Delete from the back towards the beginning of the arr so that it delete child records first
+            for (let i = records.length - 1; i >= 0; i--) {
+              const record = records[i];
+              try {
+                await prepareTestData.deleteRecord(
+                  context.testID,
+                  record.table,
+                  record.sys_id
+                );
+              } catch (error) {
+                console.error(
+                  `Error deleting record: ${record}, error: ${error}`
+                );
+              }
+            }
+          } catch (error) {
+            console.warn(`Error rolling back data: ${error}`);
+          } finally {
+            console.info('Data rollback completed!');
+          }
+        }
+      }
     }
   },
   /**
@@ -357,8 +391,40 @@ export const config: Options.Testrunner = {
    * @param {number}                 result.duration  duration of scenario in milliseconds
    * @param {object}                 context          Cucumber World object
    */
-  // afterScenario: function (world, result, context) {
-  // },
+  afterScenario: async function (world, result, context) {
+    if (rollback.trim().toUpperCase() === 'Y') {
+      console.log(`<<<<<< Starting to clean up data >>>>>>`);
+      const records = context.sysIDArr;
+      if (records.length !== 0) {
+        try {
+          //Delete from the back towards the beginning of the arr so that it delete child records first
+          for (let i = records.length - 1; i >= 0; i--) {
+            const record = records[i];
+            try {
+              await prepareTestData.deleteRecord(
+                context.testID,
+                record.table,
+                record.sys_id
+              );
+            } catch (error) {
+              console.error(
+                `Error deleting record: ${record}, error: ${error}`
+              );
+            }
+          }
+        } catch (error) {
+          console.warn(`Error rolling back data: ${error}`);
+        } finally {
+          console.info('Data rollback completed!');
+        }
+      }
+    } else {
+      console.log(
+        `${context.testID}: The records generated for this test will not be deleted. The list is as below: `
+      );
+      console.table(context.sysIDArr);
+    }
+  },
   /**
    *
    * Runs after a Cucumber Feature.

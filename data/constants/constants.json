@@ -6,7 +6,26 @@
     }
   },
   "SN": {
+    "TABLE_API": "/api/now/table",
     "SOW_HOME": "/now/sow/home",
-    "INTERACTION": "/record/interaction"
+    "INTERACTION": "/record/interaction",
+    "QUERY_PARAM": {
+      "sysparm_input_display_value": true
+    },
+    "COMPANIES": {
+      "SCC_UK": {
+        "SYS_ID": "cb3fbd9193d502109c6436befaba10f9",
+        "GROUPS": {
+          "ITIL": "50165a51935902109c6436befaba1009"
+        }
+      }
+    },
+    "TABLES": {
+      "INCIDENT": "incident",
+      "INTERACTION": "interaction",
+      "USERS": "sys_user",
+      "GROUPS": "sys_user_group",
+      "GROUP_MEMBERS": "sys_user_grmember"
+    }
   }
 }
