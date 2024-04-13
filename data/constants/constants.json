@@ -1,10 +1,4 @@
 {
-  "REQRES": {
-    "GET_USER": "/api/users",
-    "QUERY_PARAM": {
-      "pages": 2
-    }
-  },
   "SN": {
     "TABLE_API": "/api/now/table",
     "SOW_HOME": "/now/sow/home",

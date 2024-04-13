@@ -215,7 +215,7 @@ export const config: Options.Testrunner = {
     // <boolean> fail if there are any undefined or pending steps
     strict: false,
     // <string> (expression) only execute the features or scenarios with tags matching the expression
-    tagExpression: '@demo',
+    tagExpression: '@demo @smoke @debug @test',
     // <number> timeout for step definitions
     timeout: 300000,
     // <boolean> Enable this config to treat undefined definitions as warnings.
@@ -350,35 +350,13 @@ export const config: Options.Testrunner = {
     if (!result.passed) {
       await browser.takeScreenshot();
 
-      if (rollback.trim().toUpperCase() === 'Y') {
-        console.log(`<<<<<< Starting to clean up data >>>>>>`);
+      //Rollback data if rollback = 'Y'
+      const records = context.sysIDArr;
 
-        //Delete generated data
-        const records = context.sysIDArr;
-        if (records.length !== 0) {
-          try {
-            //Delete from the back towards the beginning of the arr so that it delete child records first
-            for (let i = records.length - 1; i >= 0; i--) {
-              const record = records[i];
-              try {
-                await prepareTestData.deleteRecord(
-                  context.testID,
-                  record.table,
-                  record.sys_id
-                );
-              } catch (error) {
-                console.error(
-                  `Error deleting record: ${record}, error: ${error}`
-                );
-              }
-            }
-          } catch (error) {
-            console.warn(`Error rolling back data: ${error}`);
-          } finally {
-            console.info('Data rollback completed!');
-          }
-        }
-      }
+      await prepareTestData.dataRollBack(context.testID, rollback, records);
+
+      //Set the context world object sysIDArr to empty to prevent data rollback twice
+      context.sysIDArr.length = 0;
     }
   },
   /**
@@ -391,39 +369,14 @@ export const config: Options.Testrunner = {
    * @param {number}                 result.duration  duration of scenario in milliseconds
    * @param {object}                 context          Cucumber World object
    */
+
+  //TODO: Refactor this code so that it works!!!!!!!!
+
   afterScenario: async function (world, result, context) {
-    if (rollback.trim().toUpperCase() === 'Y') {
-      console.log(`<<<<<< Starting to clean up data >>>>>>`);
-      const records = context.sysIDArr;
-      if (records.length !== 0) {
-        try {
-          //Delete from the back towards the beginning of the arr so that it delete child records first
-          for (let i = records.length - 1; i >= 0; i--) {
-            const record = records[i];
-            try {
-              await prepareTestData.deleteRecord(
-                context.testID,
-                record.table,
-                record.sys_id
-              );
-            } catch (error) {
-              console.error(
-                `Error deleting record: ${record}, error: ${error}`
-              );
-            }
-          }
-        } catch (error) {
-          console.warn(`Error rolling back data: ${error}`);
-        } finally {
-          console.info('Data rollback completed!');
-        }
-      }
-    } else {
-      console.log(
-        `${context.testID}: The records generated for this test will not be deleted. The list is as below: `
-      );
-      console.table(context.sysIDArr);
-    }
+    const records = context.sysIDArr;
+    console.log(records);
+
+    await prepareTestData.dataRollBack(context.testID, rollback, records);
   },
   /**
    *

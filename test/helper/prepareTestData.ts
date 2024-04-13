@@ -1,6 +1,6 @@
 import apiHelper from './apiHelper.ts';
 import reporter from './reporter.ts';
-import constant from '../../data/constants/constants.json' assert { type: 'json' };
+import constants from '../../data/constants/constants.json' assert { type: 'json' };
 
 async function createRecord(
   testID: string,
@@ -80,4 +80,30 @@ async function deleteRecord(testID: string, table: string, record: string) {
   }
 }
 
-export default { createRecord, deleteRecord };
+async function dataRollBack(testID, rollback, records) {
+  if (rollback.trim().toUpperCase() === 'Y') {
+    if (records.length !== 0) {
+      console.log(`<<<<<< Starting to clean up data >>>>>>`);
+
+      try {
+        //Delete from the back towards the beginning of the arr so that it delete child records first
+        for (let i = records.length - 1; i >= 0; i--) {
+          const record = records[i];
+
+          await this.deleteRecord(testID, record.table, record.sys_id);
+        }
+      } catch (error) {
+        console.warn(`Error rolling back data: ${error}`);
+      } finally {
+        console.info('Data rollback completed!');
+      }
+    }
+  } else {
+    console.log(
+      `${testID}: The records generated for this test will not be deleted. The list is as below: `
+    );
+    console.table(records);
+  }
+}
+
+export default { createRecord, deleteRecord, dataRollBack };
