@@ -1,4 +1,6 @@
 import { Given } from '@wdio/cucumber-framework';
+import { expect, should, assert } from 'chai';
+
 import prepareTestData from '../../helper/prepareTestData.ts';
 import reporter from '../../helper/reporter.ts';
 
@@ -29,7 +31,7 @@ Given(/^Create a new (.*) (.*) user record$/, async function (company, role) {
     this.testID,
     'sys_user',
     userInfo,
-    constants.SN.QUERY_PARAM
+    constants.SN.APIS.QUERY_PARAM
   );
 
   const addUserToGroupPayload = {
@@ -57,25 +59,20 @@ Given(/^Create a new (.*) (.*) user record$/, async function (company, role) {
   this.temp[`${role}_USER`] = userInfo;
 });
 
-Given(/^As an (.*) user login to serviceNow$/, async function (role) {
+Given(/^As an (.*) user I login to serviceNow$/, async function (role) {
   if (!role) throw Error(`The given user: ${role} is invalid`);
   role = role.trim().toUpperCase().replace(' ', '_');
 
   const userInfo = this.temp[`${role}_USER`];
 
-  try {
-    reporter.addStep(
-      this.testID,
-      'info',
-      `Starting to login to serviceNow with ${role} user`
-    );
-    await serviceNowLoginPage.loginToServiceNow(
-      this.testID,
-      userInfo.user_name,
-      userInfo.user_password
-    );
-  } catch (err) {
-    err.message = `${this.testID}: Failed at login to ServiceNow step, ${err.message}`;
-    throw err;
-  }
+  reporter.addStep(
+    this.testID,
+    'info',
+    `Starting to login to serviceNow with ${role} user`
+  );
+  await serviceNowLoginPage.loginToServiceNow(
+    this.testID,
+    userInfo.user_name,
+    userInfo.user_password
+  );
 });

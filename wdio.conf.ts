@@ -374,7 +374,6 @@ export const config: Options.Testrunner = {
 
   afterScenario: async function (world, result, context) {
     const records = context.sysIDArr;
-    console.log(records);
 
     await prepareTestData.dataRollBack(context.testID, rollback, records);
   },

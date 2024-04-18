@@ -22,3 +22,7 @@
 [DONE] 10. Add a logic when a step fail, after data rollback complete, set sysIDArr to empty to prevent data rollback twice
 [DONE] 11. Add a randomized ID to data creation to prevent future error when data rollback failed
 [DONE] 12. Remove all demo data, leave only SN data
+13. Fix fill in mandatory fields logic to use the newly created users record instead of fieldValues.json
+14. Implement filter and search for application modules instead of using url
+15. Refactor codes to follow the Single Responsibility Principle (SRP)
+16. Code review to add more meaningful logs and also try catch block

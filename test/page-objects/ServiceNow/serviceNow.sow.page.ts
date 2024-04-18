@@ -17,7 +17,15 @@ class SOWPage extends Page {
   }
 
   get newInteractionBtn() {
-    return $(`>>>button[class="sn-canvas-tabs-menu-list-item-button"]`);
+    return $(
+      `>>>//span[@class="sn-canvas-tabs-menu-text" and text()="New Interaction"]`
+    );
+  }
+
+  get newIncidentBtn() {
+    return $(
+      `>>>//span[@class="sn-canvas-tabs-menu-text" and text()="New Incident"]`
+    );
   }
   /**
    * Define Page Actions
