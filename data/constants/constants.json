@@ -1,16 +1,55 @@
 {
   "SN": {
-    "TABLE_API": "/api/now/table",
-    "SOW_HOME": "/now/sow/home",
-    "INTERACTION": "/record/interaction",
-    "QUERY_PARAM": {
-      "sysparm_input_display_value": true
+    "APPLICATIONS": {
+      "SOW": "/now/sow/home",
+      "INTERACTION": "/record/interaction",
+      "SERVICE_PORTAL": "/sp"
+    },
+    "APIS": {
+      "TABLE_API": "/api/now/table",
+      "QUERY_PARAM": {
+        "sysparm_input_display_value": true
+      }
     },
     "COMPANIES": {
       "SCC_UK": {
         "SYS_ID": "cb3fbd9193d502109c6436befaba10f9",
         "GROUPS": {
           "ITIL": "50165a51935902109c6436befaba1009"
+        },
+        "VA": {
+          "TOPICS": {
+            "ESS": [
+              "Check IT Ticket Status (Template)",
+              "Collaboration Applications (Template)",
+              "Email Issues (Template)",
+              "Email Setup (Template)",
+              "Guest Wifi Access (Template)",
+              "Hardware Issues (Template)",
+              "Live Agent Support.",
+              "Open IT Ticket 2.0 (Template)",
+              "PPM Virtual Agent"
+            ],
+            "ITIL": [
+              "Check IT Ticket Status (Template)",
+              "Collaboration Applications (Template)",
+              "Create Change Request (Template)",
+              "Create Problem (Template)",
+              "Email Issues (Template)",
+              "Email Setup (Template)",
+              "Escalate IT Ticket (Template)",
+              "Guest Wifi Access (Template)",
+              "Hardware Issues (Template)",
+              "Identify Available Change Windows (Templ",
+              "Identify Scheduled Changes (Template)",
+              "Live Agent Support.",
+              "Open IT Ticket 2.0 (Template)",
+              "PPM Virtual Agent",
+              "Resolve Incident (Template)",
+              "Update Assigned Task (Template)",
+              "Update Change Request (Template)"
+            ]
+          }
         }
       }
     },
