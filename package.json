@@ -22,14 +22,11 @@
   },
   "scripts": {
     "wdio": "wdio run ./wdio.conf.ts",
-    "test:debug": "export HEADLESS=N && export DEBUG=Y && npx wdio config/wdio.test.conf.ts --cucumberOpts.tagExpression='@demo' > output.txt",
-    "test:demo": "export HEADLESS=N && export DEBUG=N && npx wdio config/wdio.test.conf.ts --cucumberOpts.tagExpression='@demo'",
-    "test:smoke": "export HEADLESS=Y && export DEBUG=N && npx wdio config/wdio.test.conf.ts --cucumberOpts.tagExpression='@smoke'",
-    "uat:demo": "export HEADLESS=N && export DEBUG=N && npx wdio config/wdio.uat.conf.ts --cucumberOpts.tagExpression='@demo'",
-    "uat:smoke": "export HEADLESS=Y && export DEBUG=N && npx wdio config/wdio.uat.conf.ts --cucumberOpts.tagExpression='@smoke'",
-    "sn:demo": "export HEADLESS=N && export DEBUG=N && export ROLLBACK=Y && npx wdio config/wdio.sn.conf.ts --cucumberOpts.tagExpression='@demo'",
-    "sn:debug": "export HEADLESS=N && export DEBUG=Y && export ROLLBACK=N && npx wdio config/wdio.sn.conf.ts --cucumberOpts.tagExpression='@debug'",
-    "sn:smoke": "export HEADLESS=Y && export DEBUG=N && export ROLLBACK=Y && npx wdio config/wdio.sn.conf.ts --cucumberOpts.tagExpression='@smoke'",
-    "sn:test": "export HEADLESS=N && export DEBUG=N && export ROLLBACK=Y && npx wdio config/wdio.sn.conf.ts --cucumberOpts.tagExpression='@test'"
+    "sn:demo:m": "export HEADLESS=N && export DEBUG=N && export ROLLBACK=Y && npx wdio config/wdio.sn.conf.ts --cucumberOpts.tagExpression='@demo'",
+    "sn:debug:m": "export HEADLESS=N && export DEBUG=Y && export ROLLBACK=N && npx wdio config/wdio.sn.conf.ts --cucumberOpts.tagExpression='@debug'",
+    "sn:smoke:m": "export HEADLESS=Y && export DEBUG=N && export ROLLBACK=Y && npx wdio config/wdio.sn.conf.ts --cucumberOpts.tagExpression='@smoke'",
+    "sn:demo:w": "set HEADLESS=N && set DEBUG=N && set ROLLBACK=Y && npx wdio config/wdio.sn.conf.ts --cucumberOpts.tagExpression='@demo'",
+    "sn:debug:w": "set HEADLESS=N && set DEBUG=Y && set ROLLBACK=N && npx wdio config/wdio.sn.conf.ts --cucumberOpts.tagExpression='@debug'",
+    "sn:smoke:w": "set HEADLESS=Y && set DEBUG=N && set ROLLBACK=Y && npx wdio config/wdio.sn.conf.ts --cucumberOpts.tagExpression='@smoke'"
   }
 }
