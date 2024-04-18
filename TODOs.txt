@@ -15,14 +15,15 @@
 
 
 [DONE] 8. Refactor Given When Then steps into separate files
-9. Add a landing page object model
+[DONE] 9. Add a landing page object model
 [DONE] 10. Make the All menu (Navigation filter) pinned for all users
     -create records in sys_user_preference: https://dev204202.service-now.com/now/nav/ui/classic/params/target/sys_user_preference.do%3Fsys_id%3D756c9992935946109c6436befaba1042%26sysparm_record_target%3Dsys_user_preference%26sysparm_record_row%3D1%26sysparm_record_rows%3D3%26sysparm_record_list%3DnameSTARTSWITHglide.ui.menu.main.pinned.id%255EORDERBYname
 
 [DONE] 10. Add a logic when a step fail, after data rollback complete, set sysIDArr to empty to prevent data rollback twice
 [DONE] 11. Add a randomized ID to data creation to prevent future error when data rollback failed
 [DONE] 12. Remove all demo data, leave only SN data
-13. Fix fill in mandatory fields logic to use the newly created users record instead of fieldValues.json
+[DONE] 13. Fix fill in mandatory fields logic to use the newly created users record instead of fieldValues.json
 14. Implement filter and search for application modules instead of using url
 15. Refactor codes to follow the Single Responsibility Principle (SRP)
 16. Code review to add more meaningful logs and also try catch block
+17. Further develop SOW scenario

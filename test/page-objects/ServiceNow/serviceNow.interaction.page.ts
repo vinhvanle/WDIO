@@ -2,8 +2,6 @@ import reporter from '../../helper/reporter.ts';
 import Page from '../page.ts';
 import { expect, should, assert } from 'chai';
 
-import fieldValues from '../../../data/constants/fieldValues.json' assert { type: 'json' };
-
 class InteractionPage extends Page {
   constructor() {
     super();
@@ -93,36 +91,33 @@ class InteractionPage extends Page {
   //   } catch (err) {}
   // }
 
-  async fillCompany(company: string) {
+  async fillCompany(company: string, sys_id: string) {
     if (!company) throw Error(`Given company: ${company} is invalid`);
     try {
       await this.typeInto(await this.companyInputBox, company);
-      const sys_id = fieldValues.INTERACTION.SYS_ID[company];
-      // console.log(sys_id);
+
       await this.click(await this.getReferenceRecord(sys_id));
     } catch (err) {
       err.message = `Failed at typing Company with ${company}, ${err.message}`;
       throw err;
     }
   }
-  async fillOpenedFor(openedFor: string) {
+  async fillOpenedFor(openedFor: string, sys_id: string) {
     if (!openedFor) throw Error(`Given openedFor: ${openedFor} is invalid`);
     try {
       await this.typeInto(await this.openedForInputBox, openedFor);
-      const sys_id = fieldValues.INTERACTION.SYS_ID[openedFor];
-      // console.log(sys_id);
+
       await this.click(await this.getReferenceRecord(sys_id));
     } catch (err) {
       err.message = `Failed at typing 'Opened For' with ${openedFor}, ${err.message}`;
       throw err;
     }
   }
-  async fillAssignedTo(assignedTo: string) {
+  async fillAssignedTo(assignedTo: string, sys_id: string) {
     if (!assignedTo) throw Error(`Given assignedTo: ${assignedTo} is invalid`);
     try {
       await this.typeInto(await this.assignedToInputBox, assignedTo);
-      const sys_id = fieldValues.INTERACTION.SYS_ID[assignedTo];
-      // console.log(sys_id);
+
       await this.click(await this.getReferenceRecord(sys_id));
     } catch (err) {
       err.message = `Failed at typing 'Assigned To' with ${assignedTo}, ${err.message}`;
@@ -154,12 +149,15 @@ class InteractionPage extends Page {
 
   async fillInMandatoryFields(
     company: string,
+    company_sysID: string,
     openedFor: string,
-    assignedTo: string
+    openedFor_sysID: string,
+    assignedTo: string,
+    assignedTo_sysID: string
   ) {
-    await this.fillCompany(company);
-    await this.fillOpenedFor(openedFor);
-    await this.fillAssignedTo(assignedTo);
+    await this.fillCompany(company, company_sysID);
+    await this.fillOpenedFor(openedFor, openedFor_sysID);
+    await this.fillAssignedTo(assignedTo, assignedTo_sysID);
     await this.chooseNewTicket();
     await this.chosePhone();
     await this.clickSaveBtn();

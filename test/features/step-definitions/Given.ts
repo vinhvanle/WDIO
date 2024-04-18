@@ -55,8 +55,18 @@ Given(/^Create a new (.*) (.*) user record$/, async function (company, role) {
   //Add sysid to global array for removal later
   this.sysIDArr.push(user);
 
-  //save user to temp object:
-  this.temp[`${role}_USER`] = userInfo;
+  //save user to temp object: (including sys_id)
+  const newUserInfo = {
+    ...userInfo,
+    sys_id: user.sys_id,
+    company: {
+      //convert company name back to normal
+      name: company.replace('_', ' '),
+      sys_id: constants.SN.COMPANIES[company]['SYS_ID'],
+    },
+  };
+  console.log(newUserInfo);
+  this.temp[`${role}_USER`] = newUserInfo;
 });
 
 Given(/^As an (.*) user I login to serviceNow$/, async function (role) {

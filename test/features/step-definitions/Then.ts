@@ -7,7 +7,6 @@ import serviceNowInteractionPage from '../../page-objects/ServiceNow/serviceNow.
 import URLManipulation from '../../helper/URLManipulation.ts';
 
 import constants from '../../../data/constants/constants.json' assert { type: 'json' };
-import fieldValues from '../../../data/constants/fieldValues.json' assert { type: 'json' };
 import serviceNowServicePortalPage from '../../page-objects/ServiceNow/serviceNow.servicePortal.page.ts';
 
 Then(/^I navigate to (.*) application$/, async function (application) {
@@ -32,13 +31,23 @@ Then(/^I navigate to (.*) application$/, async function (application) {
 
 Then(/^I fill in mandatory fields$/, async function () {
   reporter.addStep(this.testID, 'info', `Filling in mandatory fields`);
-  const company = fieldValues.INTERACTION.TEXT_NAME.COMPANY;
-  const endUser = fieldValues.INTERACTION.TEXT_NAME.END_USER;
-  const agentUser = fieldValues.INTERACTION.TEXT_NAME.AGENT_USER;
+  const ESS_USER = this.temp.ESS_USER;
+  const ITIL_USER = this.temp.ITIL_USER;
+
+  const company = ESS_USER.company.name;
+  const company_sysID = ESS_USER.company.sys_id;
+  const endUser = `${ESS_USER.first_name} ${ESS_USER.last_name}`;
+  const endUser_sysID = ESS_USER.sys_id;
+  const agentUser = `${ITIL_USER.first_name} ${ITIL_USER.last_name}`;
+  const agentUser_sysID = ITIL_USER.sys_id;
+
   await serviceNowInteractionPage.fillInMandatoryFields(
     company,
+    company_sysID,
     endUser,
-    agentUser
+    endUser_sysID,
+    agentUser,
+    agentUser_sysID
   );
 
   //Wait until the URL has changed
@@ -61,6 +70,8 @@ Then(/^I fill in mandatory fields$/, async function () {
 
   //Push to global object
   this.sysIDArr.push(record);
+  console.log(record);
+  await browser.debug();
 });
 
 Then(
