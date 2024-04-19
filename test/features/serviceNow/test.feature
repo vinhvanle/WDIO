@@ -1,6 +1,6 @@
 Feature: TEST
 
-    @test
+    # @demo
 
     Scenario Outline: <TestID>: Test Scenario
 

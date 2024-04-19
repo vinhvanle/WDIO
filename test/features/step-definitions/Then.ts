@@ -41,6 +41,10 @@ Then(/^I fill in mandatory fields$/, async function () {
   const agentUser = `${ITIL_USER.first_name} ${ITIL_USER.last_name}`;
   const agentUser_sysID = ITIL_USER.sys_id;
 
+  await serviceNowInteractionPage.getMandatoryFields();
+
+  await browser.debug();
+
   await serviceNowInteractionPage.fillInMandatoryFields(
     company,
     company_sysID,
@@ -70,8 +74,6 @@ Then(/^I fill in mandatory fields$/, async function () {
 
   //Push to global object
   this.sysIDArr.push(record);
-  console.log(record);
-  await browser.debug();
 });
 
 Then(

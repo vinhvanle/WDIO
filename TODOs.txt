@@ -27,3 +27,6 @@
 15. Refactor codes to follow the Single Responsibility Principle (SRP)
 16. Code review to add more meaningful logs and also try catch block
 17. Further develop SOW scenario
+18. Fix SOW steps to be more reusable
+19. Add logic to get all the mandatory fields in a form
+    Notes: maybe use label to determine which is a mandatory field. Because each field type has a different way at showing it is a mandatory field

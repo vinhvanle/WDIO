@@ -9,9 +9,6 @@ class InteractionPage extends Page {
   /**
    * Define Page Objects
    */
-  get rootApp() {
-    return $(``);
-  }
 
   //Get all the input boxes
 
@@ -69,6 +66,11 @@ class InteractionPage extends Page {
     return $(`>>>button[data-tooltip="Save record and remain here"]`);
   }
 
+  get inputFields() {
+    //Tag name
+    return $$(`>>>div[class="now-form-field-label"]`);
+  }
+
   /**
    * Define Page Actions
    */
@@ -90,6 +92,20 @@ class InteractionPage extends Page {
   //     return await $(`>>>div[id="${choiceValue}"]`);
   //   } catch (err) {}
   // }
+
+  async getReferenceField(fieldName: string) {
+    if (!fieldName) throw Error(`Given fieldName: ${fieldName} is invalid`);
+    fieldName = fieldName.trim().toLowerCase().replace(' ', '_');
+    try {
+      return $(`>>>input[name="${fieldName}_input"]`);
+    } catch (error) {
+      error.message = `Failed at getReferenceField: ${fieldName}, ${error.message}`;
+      throw error;
+    }
+  }
+
+  //TODO: Convert functions below to a more generic one
+  async fillReferenceField(fieldName: string, text: string, sys_id: string) {}
 
   async fillCompany(company: string, sys_id: string) {
     if (!company) throw Error(`Given company: ${company} is invalid`);
@@ -122,6 +138,69 @@ class InteractionPage extends Page {
     } catch (err) {
       err.message = `Failed at typing 'Assigned To' with ${assignedTo}, ${err.message}`;
       throw err;
+    }
+  }
+  //
+  async getDropdownField(fieldName) {
+    if (!fieldName) throw Error(`Given fieldName: ${fieldName} is invalid`);
+    try {
+      return $(`>>>button[aria-label="${fieldName}"]`);
+    } catch (error) {
+      error.message = `Failed at getDropdownField, ${error.message}`;
+    }
+  }
+
+  async setDropdownFieldValue(
+    fieldName: 'Call type' | 'Type',
+    fieldValue: string
+  ) {
+    const dropdownChoice = {
+      CALL_TYPE: {
+        NONE: 'NOW_CHOICE_NONE_OPTION',
+        NEW_TICKET: 'New ticket',
+        STATUS_CALL: 'Status Call',
+        HANG_UPWRONG_NUMBER: 'Hang up/Wrong number',
+      },
+      TYPE: {
+        NONE: 'NOW_CHOICE_NONE_OPTION',
+        PHONE: 'phone',
+        EMAIL: 'Email',
+        WALK_IN: 'Walk-in',
+      },
+    };
+    if (!fieldName || !fieldValue)
+      throw Error(
+        `Given fieldName: ${fieldName} or fieldValue: ${fieldValue} is invalid`
+      );
+    const field = fieldName
+      .trim()
+      .toUpperCase()
+      .replaceAll(' ', '_')
+      .replaceAll('-', '_')
+      .replaceAll('/', '');
+
+    fieldValue = fieldValue
+      .trim()
+      .toUpperCase()
+      .replaceAll(' ', '_')
+      .replaceAll('-', '_')
+      .replaceAll('/', '');
+
+    const value = dropdownChoice[field][fieldValue];
+
+    try {
+      //Get the dropdown field
+      const dropdown = await this.getDropdownField(fieldName);
+      //Open the dropdown list
+      await this.click(dropdown);
+      //Choose value
+      const choice = await $(`>>>div[id="${value}"]`);
+      await this.click(choice);
+      //Assertion that the choice is selected
+      expect((await choice.getAttribute('aria-selected')) === 'true');
+    } catch (error) {
+      error.message = `Failed at setDropdownValue, ${error.message}`;
+      throw error;
     }
   }
 
@@ -158,9 +237,20 @@ class InteractionPage extends Page {
     await this.fillCompany(company, company_sysID);
     await this.fillOpenedFor(openedFor, openedFor_sysID);
     await this.fillAssignedTo(assignedTo, assignedTo_sysID);
-    await this.chooseNewTicket();
-    await this.chosePhone();
+    await this.setDropdownFieldValue('Call type', 'Hang up/Wrong number');
+    await this.setDropdownFieldValue('Type', 'Walk-in');
     await this.clickSaveBtn();
+  }
+
+  async getMandatoryFields() {
+    try {
+      const inputFields = await this.inputFields;
+      console.log(`>>> Number of input fields: ${inputFields.length}`);
+      console.log(JSON.stringify(inputFields));
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 }
 
