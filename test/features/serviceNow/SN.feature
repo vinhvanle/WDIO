@@ -8,12 +8,12 @@ Feature: SOW
         Given Create a new <Company> ESS user record
         Given As an ITIL user I login to serviceNow
         Then I navigate to SOW application
-        When I open <Form> form in SOW
-        Then I fill in mandatory fields
+        When I open new <Form> form in SOW
+        Then I fill in interaction mandatory fields
 
         Examples:
-            | TestID    | Company | Form            |
-            | SOW_TC001 | SCC UK  | new interaction |
+            | TestID    | Company | Form        |
+            | SOW_TC001 | SCC UK  | interaction |
     # | SOW_TC002 | SCC UK  | new incident    |
 
     # @demo

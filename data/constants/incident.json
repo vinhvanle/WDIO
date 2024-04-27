@@ -1,0 +1,40 @@
+{
+  "FORM_FIELDS": [
+    "short_description",
+    "description",
+    "number",
+    "state",
+    "caller_id",
+    "impact",
+    "location",
+    "urgency",
+    "contact_type",
+    "priority",
+    "business_service",
+    "service_offering",
+    "cmdb_ci",
+    "business_impact",
+    "assignment_group",
+    "assigned_to",
+    "comments",
+    "work_notes",
+    "parent_incident",
+    "rfc",
+    "problem_id",
+    "caused_by"
+  ],
+  "DROPDOWN_CHOICE": {
+    "u_call_type": {
+      "NONE": "NOW_CHOICE_NONE_OPTION",
+      "NEW_TICKET": "New ticket",
+      "STATUS_CALL": "Status Call",
+      "HANG_UPWRONG_NUMBER": "Hang up/Wrong number"
+    },
+    "type": {
+      "NONE": "NOW_CHOICE_NONE_OPTION",
+      "PHONE": "phone",
+      "EMAIL": "Email",
+      "WALK_IN": "Walk-in"
+    }
+  }
+}

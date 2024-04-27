@@ -1,6 +1,10 @@
 import reporter from '../../helper/reporter.ts';
 import Page from '../page.ts';
-import { expect, should, assert } from 'chai';
+import { expect as expectChai, should, assert } from 'chai';
+//Import constants
+import constants from '../../../data/constants/constants.json' assert { type: 'json' };
+import interaction from '../../../data/constants/interaction.json' assert { type: 'json' };
+import incident from '../../../data/constants/incident.json' assert { type: 'json' };
 
 class InteractionPage extends Page {
   constructor() {
@@ -67,12 +71,24 @@ class InteractionPage extends Page {
   }
 
   get inputFields() {
-    //Tag name
-    return $$(`>>>div[class="now-form-field-label"]`);
+    return $$(`>>>input[aria-describedby='form-field-label-end ']`);
+  }
+
+  get numberField() {
+    return $(`>>>//*[@name="number"]`);
+  }
+
+  get companyField() {
+    return $(`>>>[name="company"]`);
   }
 
   /**
    * Define Page Actions
+   */
+
+  /**
+   * Reference field operations
+   * *******************************************
    */
 
   async getReferenceRecord(sysID: string) {
@@ -85,14 +101,6 @@ class InteractionPage extends Page {
     }
   }
 
-  // async getDropdownChoice(choiceValue: string) {
-  //   if (!choiceValue)
-  //     throw Error(`Given choiceValue: ${choiceValue} is invalid`);
-  //   try {
-  //     return await $(`>>>div[id="${choiceValue}"]`);
-  //   } catch (err) {}
-  // }
-
   async getReferenceField(fieldName: string) {
     if (!fieldName) throw Error(`Given fieldName: ${fieldName} is invalid`);
     fieldName = fieldName.trim().toLowerCase().replace(' ', '_');
@@ -104,80 +112,45 @@ class InteractionPage extends Page {
     }
   }
 
-  //TODO: Convert functions below to a more generic one
-  async fillReferenceField(fieldName: string, text: string, sys_id: string) {}
-
-  async fillCompany(company: string, sys_id: string) {
-    if (!company) throw Error(`Given company: ${company} is invalid`);
+  async fillReferenceField(fieldName: string, text: string, sys_id: string) {
+    if (!fieldName || !text || !sys_id)
+      throw Error(
+        `Given fieldName: ${fieldName} or text: ${text}, or sys_id: ${sys_id} is invalid`
+      );
     try {
-      await this.typeInto(await this.companyInputBox, company);
-
+      const field = await this.getReferenceField(fieldName);
+      await this.typeInto(field, text);
       await this.click(await this.getReferenceRecord(sys_id));
-    } catch (err) {
-      err.message = `Failed at typing Company with ${company}, ${err.message}`;
-      throw err;
-    }
-  }
-  async fillOpenedFor(openedFor: string, sys_id: string) {
-    if (!openedFor) throw Error(`Given openedFor: ${openedFor} is invalid`);
-    try {
-      await this.typeInto(await this.openedForInputBox, openedFor);
-
-      await this.click(await this.getReferenceRecord(sys_id));
-    } catch (err) {
-      err.message = `Failed at typing 'Opened For' with ${openedFor}, ${err.message}`;
-      throw err;
-    }
-  }
-  async fillAssignedTo(assignedTo: string, sys_id: string) {
-    if (!assignedTo) throw Error(`Given assignedTo: ${assignedTo} is invalid`);
-    try {
-      await this.typeInto(await this.assignedToInputBox, assignedTo);
-
-      await this.click(await this.getReferenceRecord(sys_id));
-    } catch (err) {
-      err.message = `Failed at typing 'Assigned To' with ${assignedTo}, ${err.message}`;
-      throw err;
-    }
-  }
-  //
-  async getDropdownField(fieldName) {
-    if (!fieldName) throw Error(`Given fieldName: ${fieldName} is invalid`);
-    try {
-      return $(`>>>button[aria-label="${fieldName}"]`);
     } catch (error) {
-      error.message = `Failed at getDropdownField, ${error.message}`;
+      error.message = `Failed at fillReferenceField for ${fieldName}`;
+      throw error;
     }
   }
 
-  async setDropdownFieldValue(
-    fieldName: 'Call type' | 'Type',
-    fieldValue: string
-  ) {
-    const dropdownChoice = {
-      CALL_TYPE: {
-        NONE: 'NOW_CHOICE_NONE_OPTION',
-        NEW_TICKET: 'New ticket',
-        STATUS_CALL: 'Status Call',
-        HANG_UPWRONG_NUMBER: 'Hang up/Wrong number',
-      },
-      TYPE: {
-        NONE: 'NOW_CHOICE_NONE_OPTION',
-        PHONE: 'phone',
-        EMAIL: 'Email',
-        WALK_IN: 'Walk-in',
-      },
-    };
+  /**
+   * ********************************************************************
+   */
+
+  /**
+   * Dropdown fields operations
+   * *******************************************************************
+   */
+
+  // async getDropdownField(fieldName: string) {
+  //   if (!fieldName) throw Error(`Given fieldName: ${fieldName} is invalid`);
+  //   try {
+  //     return $(`>>>button[aria-label="${fieldName}"]`);
+  //   } catch (error) {
+  //     error.message = `Failed at getDropdownField, ${error.message}`;
+  //   }
+  // }
+
+  async fillDropdownFieldValue(fieldName: string, fieldValue: string) {
+    const dropdownChoice = interaction.DROPDOWN_CHOICE;
     if (!fieldName || !fieldValue)
       throw Error(
         `Given fieldName: ${fieldName} or fieldValue: ${fieldValue} is invalid`
       );
-    const field = fieldName
-      .trim()
-      .toUpperCase()
-      .replaceAll(' ', '_')
-      .replaceAll('-', '_')
-      .replaceAll('/', '');
 
     fieldValue = fieldValue
       .trim()
@@ -186,71 +159,96 @@ class InteractionPage extends Page {
       .replaceAll('-', '_')
       .replaceAll('/', '');
 
-    const value = dropdownChoice[field][fieldValue];
+    const value = dropdownChoice[fieldName][fieldValue];
 
     try {
       //Get the dropdown field
-      const dropdown = await this.getDropdownField(fieldName);
+      const dropdown = await this.getField(fieldName);
       //Open the dropdown list
       await this.click(dropdown);
       //Choose value
       const choice = await $(`>>>div[id="${value}"]`);
       await this.click(choice);
       //Assertion that the choice is selected
-      expect((await choice.getAttribute('aria-selected')) === 'true');
+      expectChai((await choice.getAttribute('aria-selected')) === 'true');
     } catch (error) {
       error.message = `Failed at setDropdownValue, ${error.message}`;
       throw error;
     }
   }
 
-  async chooseNewTicket() {
+  /**
+   * **********************************************************
+   */
+
+  async fillTextField(fieldName: string, text: string) {
+    if (!fieldName || !text)
+      throw Error(`Given fieldName: ${fieldName} or text: ${text} is invalid`);
     try {
-      await this.click(await this.callTypeDropdownTrigger);
-      await this.click(await this.newTicketChoice);
-    } catch (err) {
-      err.message = `Failed at choosing New Ticket, ${err.message}`;
-      throw err;
+      //get the text field
+      const textField = await this.getField(fieldName);
+      //fill field
+      await this.typeInto(textField, text);
+    } catch (error) {
+      error.message = `Failed at fillTextField, ${error.message}`;
+      throw error;
     }
   }
-  async chosePhone() {
-    try {
-      await this.click(await this.typeDropdownTrigger);
-      await this.click(await this.phoneChoice);
-    } catch (err) {
-      err.message = `Failed at choosing Phone, ${err.message}`;
-      throw err;
-    }
-  }
+
   async clickSaveBtn() {
     await this.click(await this.saveBtn);
   }
 
-  async fillInMandatoryFields(
-    company: string,
-    company_sysID: string,
-    openedFor: string,
-    openedFor_sysID: string,
-    assignedTo: string,
-    assignedTo_sysID: string
-  ) {
-    await this.fillCompany(company, company_sysID);
-    await this.fillOpenedFor(openedFor, openedFor_sysID);
-    await this.fillAssignedTo(assignedTo, assignedTo_sysID);
-    await this.setDropdownFieldValue('Call type', 'Hang up/Wrong number');
-    await this.setDropdownFieldValue('Type', 'Walk-in');
-    await this.clickSaveBtn();
+  async getField(technicalName: string) {
+    if (!technicalName)
+      throw Error(`Given technicalName: ${technicalName} is invalid`);
+    return await $(`>>>[name="${technicalName}"]`);
   }
 
-  async getMandatoryFields() {
+  async getMandatoryFields(formFields: Array<string>) {
+    let mandatoryFields = [];
+
     try {
-      const inputFields = await this.inputFields;
-      console.log(`>>> Number of input fields: ${inputFields.length}`);
-      console.log(JSON.stringify(inputFields));
+      //get each field and if it has attribute 'required' then add it to the mandatoryFields array
+      for (const formField of formFields) {
+        const field = await this.getField(formField);
+        await field.waitForDisplayed({
+          timeout: 30000,
+          interval: 500,
+        });
+        const isMandatory = await field.getAttribute('required');
+        if (isMandatory) {
+          const fieldInfo = {
+            fieldType: await field.getTagName(),
+            fieldName: formField,
+          };
+          mandatoryFields.push(fieldInfo);
+        }
+      }
+      return mandatoryFields;
     } catch (error) {
-      console.log(error);
+      error.message = `Failed at getMandatoryFields, ${error.message}`;
       throw error;
     }
+  }
+
+  async fillMandatoryField(mandatoryField, fieldValue) {
+    if (mandatoryField.fieldType === 'sn-record-choice-connected') {
+      await this.fillDropdownFieldValue(
+        mandatoryField.fieldName,
+        fieldValue.text
+      );
+    } else if (mandatoryField.fieldType === 'sn-record-reference-connected') {
+      await this.fillReferenceField(
+        mandatoryField.fieldName,
+        fieldValue.text,
+        fieldValue.sys_id
+      );
+    } else if (mandatoryField.fieldType === 'sn-record-input-connected') {
+      await this.fillTextField(mandatoryField.fieldName, fieldValue.text);
+    }
+
+    await this.clickSaveBtn();
   }
 }
 

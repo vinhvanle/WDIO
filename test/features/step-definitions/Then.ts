@@ -4,10 +4,14 @@ import { expect, should, assert } from 'chai';
 
 import serviceNowLoginPage from '../../page-objects/ServiceNow/serviceNow.login.page.ts';
 import serviceNowInteractionPage from '../../page-objects/ServiceNow/serviceNow.interaction.page.ts';
+import serviceNowServicePortalPage from '../../page-objects/ServiceNow/serviceNow.servicePortal.page.ts';
 import URLManipulation from '../../helper/URLManipulation.ts';
 
+//Import constants
 import constants from '../../../data/constants/constants.json' assert { type: 'json' };
-import serviceNowServicePortalPage from '../../page-objects/ServiceNow/serviceNow.servicePortal.page.ts';
+import interaction from '../../../data/constants/interaction.json' assert { type: 'json' };
+import incident from '../../../data/constants/incident.json' assert { type: 'json' };
+import testData from '../../../data/test-data/testData.json' assert { type: 'json' };
 
 Then(/^I navigate to (.*) application$/, async function (application) {
   if (!application) throw Error(`Given application: ${application} is invalid`);
@@ -29,7 +33,20 @@ Then(/^I navigate to (.*) application$/, async function (application) {
   );
 });
 
-Then(/^I fill in mandatory fields$/, async function () {
+Then(/^I fill in (.*) mandatory fields$/, async function (form) {
+  if (!form) throw Error(`Given form: ${form} is invalid`);
+  form = form.trim().toUpperCase().replaceAll(' ', '_');
+  let formFields = [];
+  switch (form) {
+    case 'INCIDENT':
+      formFields = incident.FORM_FIELDS;
+      break;
+    default:
+      'INTERACTION';
+      formFields = interaction.FORM_FIELDS;
+      break;
+  }
+
   reporter.addStep(this.testID, 'info', `Filling in mandatory fields`);
   const ESS_USER = this.temp.ESS_USER;
   const ITIL_USER = this.temp.ITIL_USER;
@@ -41,18 +58,29 @@ Then(/^I fill in mandatory fields$/, async function () {
   const agentUser = `${ITIL_USER.first_name} ${ITIL_USER.last_name}`;
   const agentUser_sysID = ITIL_USER.sys_id;
 
-  await serviceNowInteractionPage.getMandatoryFields();
-
-  await browser.debug();
-
-  await serviceNowInteractionPage.fillInMandatoryFields(
-    company,
-    company_sysID,
-    endUser,
-    endUser_sysID,
-    agentUser,
-    agentUser_sysID
+  const mandatoryFields = await serviceNowInteractionPage.getMandatoryFields(
+    formFields
   );
+
+  const data = testData[this.testID].data;
+
+  console.log(data);
+
+  console.log(mandatoryFields);
+
+  // await browser.debug();
+
+  for (const mandatoryField of mandatoryFields) {
+    reporter.addStep(
+      this.testID,
+      'info',
+      `Starting to fill in mandatory field: ${mandatoryField.fieldName} with value: ${mandatoryField.text}`
+    );
+    await serviceNowInteractionPage.fillMandatoryField(
+      mandatoryField.fieldName,
+      data.fieldName.fieldValue
+    );
+  }
 
   //Wait until the URL has changed
   const currentURL = await browser.getUrl();
