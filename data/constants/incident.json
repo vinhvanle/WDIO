@@ -16,8 +16,6 @@
     "business_impact",
     "assignment_group",
     "assigned_to",
-    "comments",
-    "work_notes",
     "parent_incident",
     "rfc",
     "problem_id",

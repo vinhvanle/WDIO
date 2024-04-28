@@ -1,6 +1,8 @@
 import reporter from '../../helper/reporter.ts';
 import Page from '../page.ts';
 import { expect as expectChai, should, assert } from 'chai';
+
+import URLManipulation from '../../helper/URLManipulation.ts';
 //Import constants
 import constants from '../../../data/constants/constants.json' assert { type: 'json' };
 import interaction from '../../../data/constants/interaction.json' assert { type: 'json' };
@@ -67,7 +69,7 @@ class InteractionPage extends Page {
   }
 
   get saveBtn() {
-    return $(`>>>button[data-tooltip="Save record and remain here"]`);
+    return $(`>>>button[aria-label="Save"]`);
   }
 
   get inputFields() {
@@ -82,9 +84,23 @@ class InteractionPage extends Page {
     return $(`>>>[name="company"]`);
   }
 
+  get detailsTab() {
+    return $(`>>>button[data-tooltip="Details"]`);
+  }
+
   /**
    * Define Page Actions
    */
+
+  async clickDetailsTab() {
+    try {
+      const detail = await this.detailsTab;
+      await this.click(detail);
+    } catch (error) {
+      console.log(`Failed at clicking Details Tab, ${error}`);
+      throw error;
+    }
+  }
 
   /**
    * Reference field operations
@@ -122,7 +138,7 @@ class InteractionPage extends Page {
       await this.typeInto(field, text);
       await this.click(await this.getReferenceRecord(sys_id));
     } catch (error) {
-      error.message = `Failed at fillReferenceField for ${fieldName}`;
+      error.message = `Failed at fillReferenceField for ${fieldName}, ${error.message}`;
       throw error;
     }
   }
@@ -135,15 +151,6 @@ class InteractionPage extends Page {
    * Dropdown fields operations
    * *******************************************************************
    */
-
-  // async getDropdownField(fieldName: string) {
-  //   if (!fieldName) throw Error(`Given fieldName: ${fieldName} is invalid`);
-  //   try {
-  //     return $(`>>>button[aria-label="${fieldName}"]`);
-  //   } catch (error) {
-  //     error.message = `Failed at getDropdownField, ${error.message}`;
-  //   }
-  // }
 
   async fillDropdownFieldValue(fieldName: string, fieldValue: string) {
     const dropdownChoice = interaction.DROPDOWN_CHOICE;
@@ -186,11 +193,11 @@ class InteractionPage extends Page {
       throw Error(`Given fieldName: ${fieldName} or text: ${text} is invalid`);
     try {
       //get the text field
-      const textField = await this.getField(fieldName);
+      const textField = await $(`>>>input[name='${fieldName}']`);
       //fill field
       await this.typeInto(textField, text);
     } catch (error) {
-      error.message = `Failed at fillTextField, ${error.message}`;
+      error.message = `Failed at fillTextField: ${fieldName}, ${error.message}`;
       throw error;
     }
   }
@@ -202,11 +209,11 @@ class InteractionPage extends Page {
   async getField(technicalName: string) {
     if (!technicalName)
       throw Error(`Given technicalName: ${technicalName} is invalid`);
-    return await $(`>>>[name="${technicalName}"]`);
+    return $(`>>>[name="${technicalName}"]`);
   }
 
-  async getMandatoryFields(formFields: Array<string>) {
-    let mandatoryFields = [];
+  async getAllFields(formFields: Array<string>, mandatory = false) {
+    let fields = [];
 
     try {
       //get each field and if it has attribute 'required' then add it to the mandatoryFields array
@@ -216,39 +223,57 @@ class InteractionPage extends Page {
           timeout: 30000,
           interval: 500,
         });
-        const isMandatory = await field.getAttribute('required');
-        if (isMandatory) {
-          const fieldInfo = {
-            fieldType: await field.getTagName(),
-            fieldName: formField,
-          };
-          mandatoryFields.push(fieldInfo);
+        if (mandatory === true) {
+          const isMandatory = await field.getAttribute('required');
+          if (isMandatory) {
+            const fieldInfo = {
+              fieldType: await field.getTagName(),
+              fieldName: formField,
+            };
+            fields.push(fieldInfo);
+          }
+        } else if (mandatory === false) {
+          const isMandatory = await field.getAttribute('required');
+          const readOnly = await field.getAttribute('readonly');
+          if (!isMandatory && !readOnly) {
+            const fieldInfo = {
+              fieldType: await field.getTagName(),
+              fieldName: formField,
+            };
+            fields.push(fieldInfo);
+          }
         }
       }
-      return mandatoryFields;
+      return fields;
     } catch (error) {
-      error.message = `Failed at getMandatoryFields, ${error.message}`;
+      error.message = `Failed at getAllField, ${error.message}`;
       throw error;
     }
   }
 
-  async fillMandatoryField(mandatoryField, fieldValue) {
+  /**
+   *
+   * @param {object} mandatoryField - the mandatofy field object that contains fieldType and fieldName attributes
+   * @param {object} data - the values that will be input to the field that contains text and sys_id attributes. This data should come from the testData.json in data folder
+   */
+  async fillMandatoryField(mandatoryField, data) {
     if (mandatoryField.fieldType === 'sn-record-choice-connected') {
       await this.fillDropdownFieldValue(
         mandatoryField.fieldName,
-        fieldValue.text
+        data[mandatoryField.fieldName].text
       );
     } else if (mandatoryField.fieldType === 'sn-record-reference-connected') {
       await this.fillReferenceField(
         mandatoryField.fieldName,
-        fieldValue.text,
-        fieldValue.sys_id
+        data[mandatoryField.fieldName].text,
+        data[mandatoryField.fieldName].sys_id
       );
     } else if (mandatoryField.fieldType === 'sn-record-input-connected') {
-      await this.fillTextField(mandatoryField.fieldName, fieldValue.text);
+      await this.fillTextField(
+        mandatoryField.fieldName,
+        data[mandatoryField.fieldName].text
+      );
     }
-
-    await this.clickSaveBtn();
   }
 }
 

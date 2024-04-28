@@ -28,5 +28,8 @@
     "sn:demo:w": "set HEADLESS=N && set DEBUG=N && set ROLLBACK=Y && npx wdio config/wdio.sn.conf.ts --cucumberOpts.tagExpression='@demo'",
     "sn:debug:w": "set HEADLESS=N && set DEBUG=Y && set ROLLBACK=N && npx wdio config/wdio.sn.conf.ts --cucumberOpts.tagExpression='@debug'",
     "sn:smoke:w": "set HEADLESS=Y && set DEBUG=N && set ROLLBACK=Y && npx wdio config/wdio.sn.conf.ts --cucumberOpts.tagExpression='@smoke'"
+  },
+  "dependencies": {
+    "npm": "^10.6.0"
   }
 }

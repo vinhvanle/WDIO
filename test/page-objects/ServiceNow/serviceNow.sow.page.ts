@@ -20,6 +20,24 @@ class SOWPage extends Page {
     return $$(`>>>button[class="sn-canvas-tabs-menu-list-item-button"]`);
   }
 
+  get newInteractionBtn() {
+    return $(
+      `>>>button[class='sn-canvas-tabs-menu-list-item-button'][tabindex='1']`
+    );
+  }
+
+  get newIncidentBtn() {
+    return $(
+      `>>>button[class='sn-canvas-tabs-menu-list-item-button'][tabindex='2']`
+    );
+  }
+
+  get newChangeRequestBtn() {
+    return $(
+      `>>>button[class='sn-canvas-tabs-menu-list-item-button'][tabindex='3']`
+    );
+  }
+
   /**
    * Define Page Actions
    */
@@ -28,12 +46,7 @@ class SOWPage extends Page {
     if (!testID) throw Error(`Given testID: ${testID} is invalid`);
     try {
       await this.click(await this.chromeAddNewBtn);
-
       const newFormBtn = await this.newFormBtn;
-
-      if (newFormBtn.length > 0) {
-        reporter.addStep(testID, 'info', `Successfully clicked addBtn`);
-      }
       //Assert that addBtn clicked
       expect(newFormBtn.length).to.be.greaterThan(0);
     } catch (err) {
@@ -48,17 +61,16 @@ class SOWPage extends Page {
   ) {
     if (!testID) throw Error(`Given testID: ${testID} is invalid`);
     try {
-      const newFormButtons = await this.newFormBtn;
-      let button;
+      let button: WebdriverIO.Element;
       switch (buttonName) {
         case 'New Interaction':
-          button = newFormButtons[0];
+          button = await this.newInteractionBtn;
           break;
         case 'New Incident':
-          button = newFormButtons[1];
+          button = await this.newIncidentBtn;
           break;
         case 'New Change Request':
-          button = newFormButtons[2];
+          button = await this.newChangeRequestBtn;
           break;
       }
 
@@ -75,12 +87,22 @@ class SOWPage extends Page {
     }
   }
 
-  async openNewInteractionForm(testID: string) {
-    if (!testID) throw Error(`Given testID: ${testID} is invalid`);
-
-    reporter.addStep(testID, 'info', `Opening new Interaction form`);
-    await this.clickAddBtn(testID);
-    await this.clickNewFormBtn(testID, 'New Interaction');
+  async openNewForm(testID: string, form: string) {
+    if (!testID || !form)
+      throw new Error(`Given testID: ${testID} or form: ${form} is invalid`);
+    const buttonName = {
+      INTERACTION: 'New Interaction',
+      INCIDENT: 'New Incident',
+      CHANGE_REQUEST: 'New Change Request',
+    };
+    try {
+      reporter.addStep(testID, 'info', `Opening new ${form} form`);
+      await this.clickAddBtn(testID);
+      await this.clickNewFormBtn(testID, buttonName[form]);
+    } catch (error) {
+      error.message = `Failed at opening new ${form} form, ${error.message}`;
+      throw error;
+    }
   }
 }
 

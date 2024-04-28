@@ -14,113 +14,161 @@ import incident from '../../../data/constants/incident.json' assert { type: 'jso
 import testData from '../../../data/test-data/testData.json' assert { type: 'json' };
 
 Then(/^I navigate to (.*) application$/, async function (application) {
-  if (!application) throw Error(`Given application: ${application} is invalid`);
-  application = application.trim().toUpperCase().replace(' ', '_');
-  reporter.addStep(
-    this.testID,
-    'info',
-    `Navigating to ${application} application`
-  );
-  await serviceNowLoginPage.navigateTo(
-    //@ts-ignore
-    `${browser.options.serviceNowBaseURL}${constants.SN.APPLICATIONS[application]}`
-  );
-
-  await URLManipulation.verifyUrl(
-    this.testID,
-    //@ts-ignore
-    `${browser.options.serviceNowBaseURL}${constants.SN.APPLICATIONS[application]}`
-  );
-});
-
-Then(/^I fill in (.*) mandatory fields$/, async function (form) {
-  if (!form) throw Error(`Given form: ${form} is invalid`);
-  form = form.trim().toUpperCase().replaceAll(' ', '_');
-  let formFields = [];
-  switch (form) {
-    case 'INCIDENT':
-      formFields = incident.FORM_FIELDS;
-      break;
-    default:
-      'INTERACTION';
-      formFields = interaction.FORM_FIELDS;
-      break;
-  }
-
-  reporter.addStep(this.testID, 'info', `Filling in mandatory fields`);
-  const ESS_USER = this.temp.ESS_USER;
-  const ITIL_USER = this.temp.ITIL_USER;
-
-  const company = ESS_USER.company.name;
-  const company_sysID = ESS_USER.company.sys_id;
-  const endUser = `${ESS_USER.first_name} ${ESS_USER.last_name}`;
-  const endUser_sysID = ESS_USER.sys_id;
-  const agentUser = `${ITIL_USER.first_name} ${ITIL_USER.last_name}`;
-  const agentUser_sysID = ITIL_USER.sys_id;
-
-  const mandatoryFields = await serviceNowInteractionPage.getMandatoryFields(
-    formFields
-  );
-
-  const data = testData[this.testID].data;
-
-  console.log(data);
-
-  console.log(mandatoryFields);
-
-  // await browser.debug();
-
-  for (const mandatoryField of mandatoryFields) {
+  if (!application)
+    throw new Error(`Given application: ${application} is invalid`);
+  try {
+    application = application.trim().toUpperCase().replace(' ', '_');
     reporter.addStep(
       this.testID,
       'info',
-      `Starting to fill in mandatory field: ${mandatoryField.fieldName} with value: ${mandatoryField.text}`
+      `Navigating to ${application} application`
     );
-    await serviceNowInteractionPage.fillMandatoryField(
-      mandatoryField.fieldName,
-      data.fieldName.fieldValue
+    await serviceNowLoginPage.navigateTo(
+      //@ts-ignore
+      `${browser.options.serviceNowBaseURL}${constants.SN.APPLICATIONS[application]}`
     );
+
+    await URLManipulation.verifyUrl(
+      this.testID,
+      //@ts-ignore
+      `${browser.options.serviceNowBaseURL}${constants.SN.APPLICATIONS[application]}`
+    );
+  } catch (err) {
+    reporter.addStep(
+      this.testID,
+      'error',
+      `Error while navigating to ${application}, ${err}`
+    );
+    throw err;
   }
-
-  //Wait until the URL has changed
-  const currentURL = await browser.getUrl();
-  await browser.waitUntil(
-    async function () {
-      return (await browser.getUrl()) !== currentURL;
-    },
-    {
-      timeout: 5000, // Timeout in milliseconds
-      timeoutMsg: 'URL did not change within 5 seconds',
-    }
-  );
-
-  const newURL = await browser.getUrl();
-
-  //Extract the table and sys_id from URL
-
-  const record = URLManipulation.extractRecordDetails(newURL, 'top');
-
-  //Push to global object
-  this.sysIDArr.push(record);
 });
+
+Then(
+  /^I fill in (.*) (non-mandatory|mandatory) fields$/,
+  async function (form, mandatory) {
+    if (!form || !mandatory)
+      throw new Error(
+        `Given form: ${form} or mandatory: ${mandatory} is invalid`
+      );
+    try {
+      form = form.trim().toUpperCase().replaceAll(' ', '_');
+      let formFields = [];
+      switch (form) {
+        case 'INCIDENT':
+          formFields = incident.FORM_FIELDS;
+          break;
+        case 'INTERACTION':
+          formFields = incident.FORM_FIELDS;
+          break;
+      }
+
+      //Get the user info from world object
+      const ESS_USER = this.temp.ESS_USER;
+      const ITIL_USER = this.temp.ITIL_USER;
+
+      const data = testData[this.testID].data;
+      //Manipulate data to add in newly created users record
+      data.company = {
+        text: ESS_USER.company.name,
+        sys_id: ESS_USER.company.sys_id,
+      };
+      data.opened_for = {
+        text: `${ESS_USER.first_name} ${ESS_USER.last_name}`,
+        sys_id: ESS_USER.sys_id,
+      };
+      data.assigned_to = {
+        text: `${ITIL_USER.first_name} ${ITIL_USER.last_name}`,
+        sys_id: ITIL_USER.sys_id,
+      };
+      data.caller_id = {
+        text: `${ESS_USER.first_name} ${ESS_USER.last_name}`,
+        sys_id: ESS_USER.sys_id,
+      };
+
+      //Click details tab
+      await serviceNowInteractionPage.clickDetailsTab();
+
+      if (mandatory === 'mandatory') {
+        reporter.addStep(this.testID, 'info', `Filling in mandatory fields`);
+
+        //Get all mandatory fields
+        const mandatoryFields = await serviceNowInteractionPage.getAllFields(
+          formFields,
+          true
+        );
+
+        for (const mandatoryField of mandatoryFields) {
+          reporter.addStep(
+            this.testID,
+            'info',
+            `Starting to fill in mandatory field: ${mandatoryField.fieldName}`
+          );
+          await serviceNowInteractionPage.fillMandatoryField(
+            mandatoryField,
+            data
+          );
+        }
+      } else {
+        reporter.addStep(
+          this.testID,
+          'info',
+          `Filling in non-mandatory fields`
+        );
+
+        //Get all non-mandatory fields
+        const nonMandatoryFields = await serviceNowInteractionPage.getAllFields(
+          formFields
+        );
+
+        for (const nonMandatoryField of nonMandatoryFields) {
+          reporter.addStep(
+            this.testID,
+            'info',
+            `Starting to fill in non-mandatory field: ${nonMandatoryField.fieldName}`
+          );
+          await serviceNowInteractionPage.fillMandatoryField(
+            nonMandatoryField,
+            data
+          );
+        }
+      }
+    } catch (err) {
+      reporter.addStep(
+        this.testID,
+        'error',
+        `Error while filling in ${mandatory} fields in ${form}, ${err}`
+      );
+      throw err;
+    }
+  }
+);
 
 Then(
   /^I can verify (.*) topics availability for (.*) user$/,
   async function (company, role) {
     if (!company || !role)
       throw new Error(`Given company: ${company} or role: ${role} is invalid`);
-    company = company.trim().toUpperCase().replace(' ', '_');
-    role = role.trim().toUpperCase().replace(' ', '_');
-    reporter.addStep(
-      this.testID,
-      'info',
-      `Starting to verify the ${company} available topics`
-    );
+    try {
+      company = company.trim().toUpperCase().replace(' ', '_');
+      role = role.trim().toUpperCase().replace(' ', '_');
+      reporter.addStep(
+        this.testID,
+        'info',
+        `Starting to verify the ${company} available topics`
+      );
 
-    await serviceNowServicePortalPage.verifyTopicsAvailability(
-      this.testID,
-      company,
-      role
-    );
+      await serviceNowServicePortalPage.verifyTopicsAvailability(
+        this.testID,
+        company,
+        role
+      );
+    } catch (err) {
+      reporter.addStep(
+        this.testID,
+        'error',
+        `Error while verifying ${company} topics availability for ${role}`
+      );
+      throw err;
+    }
   }
 );

@@ -10,11 +10,14 @@ Feature: SOW
         Then I navigate to SOW application
         When I open new <Form> form in SOW
         Then I fill in interaction mandatory fields
+        Given I submit the new form
+        # Then I fill in interaction non-mandatory fields
+        # Given I submit the current form
 
         Examples:
-            | TestID    | Company | Form        |
-            | SOW_TC001 | SCC UK  | interaction |
-    # | SOW_TC002 | SCC UK  | new incident    |
+            | TestID    | Company | Form     |
+            # | SOW_TC001 | SCC UK  | interaction |
+            | SOW_TC002 | SCC UK  | incident |
 
     # @demo
     Scenario Outline: <TestID>: Check VA topics availability
